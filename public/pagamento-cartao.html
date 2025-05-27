@@ -2,102 +2,201 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Pagamento com Cartão de Crédito</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Pagamento com Cartão</title>
   <style>
-    body {
-      background: linear-gradient(135deg, #ffe4ec 0%, #f8e1ff 100%);
-      font-family: 'Quicksand', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    .container-flex {
-      display: flex;
-      flex-direction: row;
-      max-width: 850px;
-      margin: 40px auto 20px auto;
-      gap: 32px;
-    }
-    .main-container {
-      flex: 1;
-      background: #fff;
-      border-radius: 26px;
-      box-shadow: 0 6px 38px #be429978;
-      padding: 32px 18px 24px 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 320px;
-    }
-    .produto-info {
-      flex: 1;
-      background: #fff4fc;
-      border-radius: 22px;
-      box-shadow: 0 2px 18px #dbb1ca42;
-      padding: 28px 24px 16px 24px;
-      min-width: 270px;
-      max-width: 340px;
-      margin-bottom: 0;
-      font-size: 1.06em;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      height: fit-content;
-    }
-    .titulo { color: #be4299; font-size: 1.45em; font-weight: 700; text-align: center; margin-bottom: 13px; margin-top: 0; letter-spacing: 0.01em; }
-    .form-box { width: 100%; }
-    label { display: block; margin: 4px 0 2px 2px; color: #7e438b; font-size: 0.95em; font-weight: 500; letter-spacing: 0.01em; }
-    input, select {
-      width: 100%; padding: 7px 8px; border-radius: 7px; border: 1px solid #c8a4c6; margin-bottom: 10px;
-      background: #fff; font-size: 0.97em; color: #542a65; transition: border 0.2s;
-    }
-    input:focus, select:focus { border-color: #be4299; outline: none; background: #f7ebf9; }
-    select:disabled { color: #a39bb0; background: #eee; }
-    .mensagem-analise {
-      text-align: center; color: #7e438b; font-size: 1.15em; background: #f8e1ff;
-      border-radius: 10px; padding: 25px 10px; margin-top: 25px; font-weight: 600; box-shadow: 0 2px 12px #be429931;
-    }
-    .parcelas-group { margin-bottom: 14px; }
-    .parcela-opcao { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-    .parcela-radio { accent-color: #be4299; }
-    .valor-total {
-      margin: 18px 0 6px 0; font-weight: 700; font-size: 1.13em; color: #be4299; text-align: right;
-    }
-    button[type='submit'] {
-      background: linear-gradient(90deg,#f14fa6,#be4299 90%); color: #fff; padding: 12px 0; border: none;
-      border-radius: 10px; width: 100%; font-size: 1.13em; font-weight: bold; cursor: pointer;
-      margin-top: 10px; margin-bottom: 2px; box-shadow: 0 2px 12px #be429931; transition: background .16s;
-      opacity: 1;
-    }
-    button[type='submit']:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    button[type='submit']:hover:enabled { background: linear-gradient(90deg,#be4299,#f14fa6 90%); }
-    .desc-prod strong { color: #be4299; }
-    .valor-prod { font-size: 1.22em; color: #be4299; font-weight: bold; }
-    .frete { color: #36a81c; font-weight: bold; }
-    .prazo { color: #aa33aa; }
-    @media (max-width: 900px) {
-      .container-flex { flex-direction: column; align-items: stretch; gap: 14px; }
-      .main-container, .produto-info { max-width: 98vw; min-width: 0; margin: 0 auto; }
-    }
+    body { font-family: Quicksand, Arial, sans-serif; background: #fff7fb; margin: 0; padding: 0; }
+    .logo { display: block; margin: 16px auto; max-width: 150px; }
+    .container { display: flex; max-width: 900px; margin: 0 auto 32px; gap: 24px; }
+    .form-area, .info-area { background: #fff; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; }
+    .form-area { flex: 2; }
+    .info-area { flex: 1; background: #fdebf5; text-align: center; }
+    h2 { color: #be4299; margin-top: 0; }
+    label { display: block; margin-top: 12px; }
+    input, select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; }
+    .dropdown { margin-top: 12px; }
+    .total { font-size: 1.2em; margin-top: 16px; font-weight: bold; }
+    .error { color: #c00; font-size: 0.9em; margin-top: 4px; }
+    button { margin-top: 24px; padding: 12px 20px; background: #be4299; color: #fff; border: none; border-radius: 4px; cursor: pointer; width:100%; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    button:hover:enabled { background: #a62e80; }
+    .info-area video { max-width: 100%; height: auto; margin-top: 16px; border-radius: 4px; }
   </style>
 </head>
 <body>
-  <div class="container-flex">
-    <div class="main-container">
-      <h1 class="titulo">Pagamento com Cartão de Crédito</h1>
-      <div class="form-box" id="formulario-box">
-        <form id="form-cartao" autocomplete="off">
-          <label for="nome-titular">Nome do titular do cartão</label>
-          <input type="text" id="nome-titular" name="nome-titular" autocomplete="cc-name">
-          <label for="numero-cartao">Número do cartão</label>
-          <input type="text" id="numero-cartao" name="numero-cartao" maxlength="19" placeholder="0000 0000 0000 0000" inputmode="numeric" autocomplete="cc-number">
-          <label for="validade">Data de validade (MM/AA)</label>
-          <input type="text" id="validade" name="validade" maxlength="5" placeholder="MM/AA" inputmode="numeric" autocomplete="cc-exp">
-          <label for="cvv">CVV</label>
-          <input type="text" id="cvv" name="cvv" maxlength="3" placeholder="CVV" inputmode="numeric" autocomplete="cc-csc">
-          <label for="cpf-titular">CPF do titular</label>
-          <input type="text"
+  <!-- Logo no topo -->
+  <img src="imagens/logo.png" alt="Dream Baby" class="logo">
+
+  <div class="container">
+    <!-- Formulário de Dados do Cartão -->
+    <div class="form-area">
+      <h2>Dados do Cartão</h2>
+      <label for="nome-cartao">Nome no Cartão</label>
+      <input type="text" id="nome-cartao">
+
+      <label for="num-cartao">Número do Cartão</label>
+      <input type="text" id="num-cartao" maxlength="19" placeholder="0000 0000 0000 0000">
+      <div id="num-error" class="error" style="display:none;">Insira um número de cartão válido.</div>
+
+      <label for="validade">Validade (MM/AA)</label>
+      <input type="text" id="validade" maxlength="5" placeholder="MM/AA">
+      <div id="validade-error" class="error" style="display:none;">Data de validade inválida ou expirada.</div>
+
+      <label for="cvv">CVV</label>
+      <input type="text" id="cvv" maxlength="3">
+
+      <label for="telefone">Telefone</label>
+      <input type="text" id="telefone" placeholder="(00) 00000-0000">
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="seu@email.com">
+
+      <div class="dropdown">
+        <label for="parcelamento">Parcelamento</label>
+        <select id="parcelamento"></select>
+      </div>
+
+      <div class="total">Valor Total: <span id="valor-total"></span></div>
+      <button id="btn-finalizar" onclick="finalizar()" disabled>Finalizar Pagamento</button>
+    </div>
+
+    <!-- Informações da Compra -->
+    <div class="info-area">
+      <h2>Informações da Compra</h2>
+      <p><strong>Produto:</strong> Boneca Reborn Personalizada</p>
+      <p><strong>CEP de entrega:</strong> <span id="cep-info"></span></p>
+      <p><strong>Frete:</strong> Grátis</p>
+      <p><strong>Prazo de entrega:</strong> 10 dias úteis</p>
+      <p><strong>Parcelamento:</strong> <span id="parcelamento-info"></span></p>
+      <!-- Vídeo dinâmico conforme boneca escolhida -->
+      <video id="promo-video" controls autoplay muted loop playsinline>
+        <source src="" type="video/mp4">
+        Seu navegador não suporta reprodução de vídeo.
+      </video>
+    </div>
+  </div>
+
+  <script>
+    const VALOR   = 499.90;
+    const cep     = localStorage.getItem('cep')    || '';
+    const boneca  = localStorage.getItem('boneca') || '';  // "Sofia", "Valentina" ou "Maria"
+    const cabelo  = localStorage.getItem('cabelo') || '';
+
+    const inpNome  = document.getElementById('nome-cartao');
+    const inpNum   = document.getElementById('num-cartao');
+    const inpVal   = document.getElementById('validade');
+    const inpCVV   = document.getElementById('cvv');
+    const inpTel   = document.getElementById('telefone');
+    const inpEmail = document.getElementById('email');
+    const sel      = document.getElementById('parcelamento');
+    const btnFin   = document.getElementById('btn-finalizar');
+    const numErr   = document.getElementById('num-error');
+    const valErr   = document.getElementById('validade-error');
+    const video    = document.getElementById('promo-video');
+
+    let validCardNum = false;
+    let validExpiry  = false;
+
+    // Preenche info fixa
+    document.getElementById('cep-info').textContent     = cep ? cep.slice(0,5) + '-' + cep.slice(5) : '—';
+    document.getElementById('valor-total').textContent = `R$ ${VALOR.toFixed(2).replace('.',',')}`;
+
+    // Configura vídeo de acordo com o boneca selecionada
+    if (boneca) {
+      video.querySelector('source').src = `videos/${boneca}.mp4`;
+      video.load();
+    }
+
+    // Monta opções de parcelamento
+    for (let i = 1; i <= 12; i++) {
+      const vl  = (VALOR / i).toFixed(2).replace('.',',');
+      const txt = i === 1
+        ? `1× de R$ ${vl} (à vista)`
+        : `${i}× de R$ ${vl}`;
+      sel.innerHTML += `<option value="${i}">${txt}</option>`;
+    }
+    sel.value = 1;
+
+    function atualizaBtn() {
+      btnFin.disabled = !(
+        validCardNum &&
+        validExpiry &&
+        inpTel.value.trim() &&
+        inpEmail.value.trim()
+      );
+      document.getElementById('parcelamento-info').textContent =
+        sel.value === '1'
+          ? 'À vista'
+          : `${sel.value}× de R$ ${(VALOR/sel.value).toFixed(2).replace('.',',')}`;
+    }
+    sel.addEventListener('change', atualizaBtn);
+
+    // Máscara de validade
+    inpVal.addEventListener('input', () => {
+      let v = inpVal.value.replace(/\D/g,'');
+      if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2,4);
+      inpVal.value = v;
+    });
+
+    // Luhn para cartão
+    inpNum.addEventListener('input', () => {
+      let v = inpNum.value.replace(/\D/g,'').match(/.{1,4}/g)?.join(' ') || '';
+      inpNum.value = v;
+      const num = v.replace(/\s/g,'');
+      if (num.length < 12) {
+        validCardNum = false; numErr.style.display = 'none';
+      } else {
+        let sum = 0, alt = false;
+        for (let i = num.length - 1; i >= 0; i--) {
+          let n = parseInt(num[i],10);
+          if (alt) { n *= 2; if (n>9) n -= 9; }
+          sum += n; alt = !alt;
+        }
+        validCardNum = sum % 10 === 0;
+        numErr.style.display = validCardNum ? 'none' : 'block';
+      }
+      atualizaBtn();
+    });
+
+    // Validação da validade
+    inpVal.addEventListener('blur', () => {
+      const m = inpVal.value.match(/^(\d{2})\/(\d{2})$/);
+      if (!m) validExpiry = false;
+      else {
+        const month = +m[1], year = 2000 + +m[2], now = new Date();
+        validExpiry = month>=1 && month<=12 &&
+          (year>now.getFullYear() || (year===now.getFullYear() && month>=now.getMonth()+1));
+      }
+      valErr.style.display = validExpiry ? 'none' : 'block';
+      atualizaBtn();
+    });
+
+    inpTel.addEventListener('input', atualizaBtn);
+    inpEmail.addEventListener('input', atualizaBtn);
+
+    // Função de envio
+    async function finalizar() {
+      const dados = {
+        nome_titular:  inpNome.value,
+        numero_cartao: inpNum.value.replace(/\s/g,''),
+        validade:      inpVal.value,
+        cvv:           inpCVV.value,
+        parcelas:      +sel.value,
+        total:         VALOR,
+        cep, boneca, cabelo,
+        telefone:      inpTel.value,
+        email:         inpEmail.value
+      };
+      const resp = await fetch('/pedido', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(dados)
+      });
+      if (!resp.ok) {
+        alert('Erro ao processar. Tente novamente.');
+        return;
+      }
+      window.location.href = 'pagamento-analise.html';
+    }
+  </script>
+</body>
+</html>

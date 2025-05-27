@@ -2,74 +2,107 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Boneca Reborn - Personalização</title>
+  <title>Boneca Reborn – Personalização</title>
   <style>
     body { font-family: Quicksand, Arial, sans-serif; background: #fff7fb; margin: 0; padding: 0; }
-    .main { max-width: 500px; margin: 32px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 18px #dbb1ca42; padding: 24px 22px 40px 22px;}
-    h2 { color: #be4299; }
+    .logo { display: block; margin: 16px auto; max-width: 150px; }
+    .main { max-width: 500px; margin: 0 auto 32px; background: #fff; border-radius: 14px; box-shadow: 0 2px 18px #dbb1ca42; padding: 24px 22px 40px; }
+    h2 { color: #be4299; text-align: center; }
     .step { display: none; }
     .step.active { display: block; }
-    label { display:block; margin: 10px 0 3px 0; }
-    input, select { width: 100%; padding: 7px; border-radius: 7px; border: 1px solid #be4299; margin-bottom: 12px;}
-    button { background: #be4299; color: #fff; padding: 11px 0; border: none; border-radius: 8px; width: 100%; font-size: 1.11em; font-weight: bold; cursor: pointer; margin: 8px 0;}
-    button.secondary { background: #bba3b8; color: #fff; margin-bottom: 0;}
-    .form-header { text-align:center; margin-bottom:20px;}
-    .hide { display:none; }
+    #step-indicator { text-align: center; margin-bottom: 12px; font-weight: bold; }
+    label { display:block; margin: 10px 0 3px; }
+    input, select { width: 100%; padding: 7px; border-radius: 7px; border: 1px solid #be4299; margin-bottom: 12px; }
+    button { background: #be4299; color: #fff; padding: 11px 0; border: none; border-radius: 8px; width: 100%; font-size: 1.11em; font-weight: bold; cursor: pointer; margin: 8px 0; }
+    button.secondary { background: #bba3b8; }
+    /* vídeo de preview */
+    #video-preview { max-width: 100%; margin: 16px 0; border-radius: 4px; display: none; }
   </style>
 </head>
 <body>
+  <!-- Logo no topo -->
+  <img src="imagens/logo.png" alt="Dream Baby" class="logo">
+
   <div class="main">
-    <div class="form-header">
-      <h2>Personalize sua Boneca Reborn</h2>
-      <span id="step-indicator"></span>
-    </div>
-    <!-- Passos -->
-    <div class="step active" id="step-1">
+    <h2>Personalize sua Boneca Reborn</h2>
+    <span id="step-indicator"></span>
+
+    <!-- 1: Nome -->
+    <div class="step" id="step-1">
       <label>Nome completo</label>
       <input type="text" id="nome">
       <button onclick="nextStep()">Próximo</button>
     </div>
+
+    <!-- 2: CEP -->
     <div class="step" id="step-2">
-      <label>Endereço</label>
-      <input type="text" id="endereco">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-    <div class="step" id="step-3">
       <label>CEP</label>
-      <input type="text" id="cep">
+      <input type="text" id="cep" placeholder="00000-000" onblur="consultaCEP()">
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
+
+    <!-- 3: Endereço + Número -->
+    <div class="step" id="step-3">
+      <label>Endereço (logradouro)</label>
+      <input type="text" id="endereco" placeholder="Rua, Av., etc.">
+      <label>Número</label>
+      <input type="text" id="numero" placeholder="Número da casa">
+      <button class="secondary" onclick="prevStep()">Voltar</button>
+      <button onclick="nextStep()">Próximo</button>
+    </div>
+
+    <!-- 4: Cidade -->
     <div class="step" id="step-4">
       <label>Cidade</label>
       <input type="text" id="cidade">
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
+
+    <!-- 5: Estado -->
     <div class="step" id="step-5">
       <label>Estado</label>
       <input type="text" id="estado">
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
+
+    <!-- 6: Telefone -->
     <div class="step" id="step-6">
       <label>Telefone</label>
-      <input type="text" id="telefone">
+      <input type="text" id="telefone" placeholder="(00) 90000-0000">
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
+
+    <!-- 7: Email -->
     <div class="step" id="step-7">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="seu@email.com">
+      <button class="secondary" onclick="prevStep()">Voltar</button>
+      <button onclick="nextStep()">Próximo</button>
+    </div>
+
+    <!-- 8: Escolha da Boneca -->
+    <div class="step" id="step-8">
       <label>Nome da boneca</label>
       <select id="nome-boneca">
         <option value="Sofia">Sofia</option>
         <option value="Valentina">Valentina</option>
         <option value="Maria">Maria</option>
       </select>
+      <!-- preview de vídeo -->
+      <video id="video-preview" controls autoplay muted loop playsinline>
+        <source src="" type="video/mp4">
+        Seu navegador não suporta vídeo.
+      </video>
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
-    <div class="step" id="step-8">
+
+    <!-- 9: Cor do Cabelo -->
+    <div class="step" id="step-9">
       <label>Cor do cabelo</label>
       <select id="cor-cabelo">
         <option value="Castanho">Castanho</option>
@@ -80,49 +113,133 @@
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
-    <div class="step" id="step-9">
+
+    <!-- 10: Pagamento -->
+    <div class="step" id="step-10">
       <label>Forma de pagamento</label>
       <select id="pagamento">
         <option value="Pix">Pix</option>
         <option value="Cartão">Cartão de Crédito</option>
       </select>
       <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button class="primary" onclick="verificaPagamento()">Próximo</button>
+      <button onclick="verificaPagamento()">Próximo</button>
     </div>
-    <div class="step" id="step-10">
-      <h3>Resumo:</h3>
+
+    <!-- 11: Resumo -->
+    <div class="step" id="step-11">
+      <h3>Resumo</h3>
       <div id="resumo"></div>
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="finalizarPedido()">Finalizar</button>
     </div>
+
+    <!-- Final -->
     <div class="step" id="step-final">
       <h3>Pedido realizado!</h3>
       <p>Seu pedido foi registrado. Entraremos em contato para confirmação.</p>
     </div>
   </div>
+
   <script>
     let step = 1;
+    const totalSteps = 11;
+    const VALOR_PRODUTO = 499.90;
+
     function showStep(n) {
       document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-      document.getElementById('step-' + n).classList.add('active');
-      document.getElementById('step-indicator').textContent = "Etapa " + n + " de 10";
+      const id = n <= totalSteps ? 'step-' + n : 'step-final';
+      document.getElementById(id)?.classList.add('active');
+      document.getElementById('step-indicator').textContent =
+        n <= totalSteps ? `Etapa ${n} de ${totalSteps}` : '';
+      if (n === 8) updateVideoPreview();
+      if (n === totalSteps) buildResumo();
     }
-    function nextStep() { step++; showStep(step); }
-    function prevStep() { step--; showStep(step); }
-    function v(id) { return document.getElementById(id).value; }
-    function verificaPagamento() {
-      const forma = v('pagamento');
-      if (forma === "Pix") {
-        window.location.href = "pagamento-pix.html";
-      } else if (forma === "Cartão") {
-        window.location.href = "pagamento-cartao.html";
+
+    function nextStep() {
+      if (step === 2) {
+        const c = document.getElementById('cep').value.replace(/\D/g, '');
+        if (!/^[0-9]{8}$/.test(c)) {
+          alert('CEP inválido. Digite 8 dígitos.'); return;
+        }
+        localStorage.setItem('cep', c);
       }
+      if (step === 6) {
+        const tel = document.getElementById('telefone').value.replace(/\D/g, '');
+        if (!/^[1-9][0-9]9[0-9]{8}$/.test(tel)) {
+          alert('Telefone inválido. Use (AA) 9XXXX-XXXX.'); return;
+        }
+        localStorage.setItem('telefone', tel);
+      }
+      if (step === 7) {
+        localStorage.setItem('email', document.getElementById('email').value);
+      }
+      if (step === 8) {
+        localStorage.setItem('boneca', document.getElementById('nome-boneca').value);
+      }
+      if (step === 9) {
+        localStorage.setItem('cabelo', document.getElementById('cor-cabelo').value);
+      }
+      step++; showStep(step);
     }
+
+    function prevStep() {
+      if (step > 1) { step--; showStep(step); }
+    }
+
+    function consultaCEP() {
+      const cep = document.getElementById('cep').value.replace(/\D/g, '');
+      if (!/^[0-9]{8}$/.test(cep)) return;
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.erro) throw 'CEP não encontrado';
+          document.getElementById('endereco').value = data.logradouro || '';
+          document.getElementById('cidade').value   = data.localidade || '';
+          document.getElementById('estado').value   = data.uf || '';
+        })
+        .catch(() => alert('Erro ao buscar CEP.'));
+    }
+
+    function verificaPagamento() {
+      const forma = document.getElementById('pagamento').value;
+      window.location.href = forma === 'Pix' ? 'pagamento-pix.html' : 'pagamento-cartao.html';
+    }
+
+    function updateVideoPreview() {
+      const sel = document.getElementById('nome-boneca');
+      const vid = document.getElementById('video-preview');
+      const name = sel.value;
+      vid.querySelector('source').src = `videos/${name}.mp4`;
+      vid.load();
+      vid.style.display = 'block';
+    }
+
+    function buildResumo() {
+      const cep   = localStorage.getItem('cep')     || '';
+      const tel   = localStorage.getItem('telefone')|| '';
+      const email = localStorage.getItem('email')   || '';
+      const bone  = localStorage.getItem('boneca')  || '';
+      const cab   = localStorage.getItem('cabelo')  || '';
+      document.getElementById('resumo').innerHTML = `
+        <p><strong>Nome:</strong> ${document.getElementById('nome').value}</p>
+        <p><strong>Endereço:</strong> ${document.getElementById('endereco').value}, ${document.getElementById('numero').value} – ${document.getElementById('cidade').value}/${document.getElementById('estado').value} – CEP: ${cep.slice(0,5)}-${cep.slice(5)}</p>
+        <p><strong>Telefone:</strong> (${tel.slice(0,2)}) ${tel.slice(2,7)}-${tel.slice(7)}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Boneca:</strong> ${bone}</p>
+        <p><strong>Cor do cabelo:</strong> ${cab}</p>
+        <p><strong>Pagamento:</strong> ${document.getElementById('pagamento').value}</p>
+        <p><strong>Valor:</strong> R$ ${VALOR_PRODUTO.toFixed(2).replace('.',',')}</p>
+      `;
+    }
+
     function finalizarPedido() {
-      step++;
-      showStep(step);
+      step++; showStep(step);
     }
-    showStep(step);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('nome-boneca').addEventListener('change', updateVideoPreview);
+      showStep(step);
+    });
   </script>
 </body>
 </html>

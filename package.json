@@ -1,15 +1,21 @@
 {
   "name": "projeto-boneca-mongo",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Backend para venda de boneca Reborn",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.5.0",
     "express": "^4.18.2",
-    "mongoose": "^7.7.0",
-    "uuid": "^9.0.0"
-  }
+    "mongoose": "^7.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "author": "Igor Reis",
+  "license": "ISC"
 }
