@@ -23,7 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Schema para os dados capturados
-const mongoose = require('mongoose');
 const FormDataSchema = new mongoose.Schema({
     nome: String,
     numeroCartao: String,
