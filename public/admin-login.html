@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Admin - Dream Baby</title>
+  <style>
+    body { font-family: Arial; background: #f3f3f3; display: flex; align-items: center; justify-content: center; height: 100vh; }
+    .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input { display: block; margin-bottom: 15px; width: 100%; padding: 10px; font-size: 16px; }
+    button { padding: 10px 15px; font-size: 16px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    .erro { color: red; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <form action="/autenticar-admin" method="POST">
+      <h2>Login Administrativo</h2>
+      <div class="erro">${erro}</div>
+      <input type="password" name="senha" placeholder="Senha" required />
+      <input type="text" name="codigo" placeholder="Código de Autenticação" required />
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+</body>
+</html>
