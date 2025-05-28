@@ -1,245 +1,408 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Boneca Reborn – Personalização</title>
-  <style>
-    body { font-family: Quicksand, Arial, sans-serif; background: #fff7fb; margin: 0; padding: 0; }
-    .logo { display: block; margin: 16px auto; max-width: 150px; }
-    .main { max-width: 500px; margin: 0 auto 32px; background: #fff; border-radius: 14px; box-shadow: 0 2px 18px #dbb1ca42; padding: 24px 22px 40px; }
-    h2 { color: #be4299; text-align: center; }
-    .step { display: none; }
-    .step.active { display: block; }
-    #step-indicator { text-align: center; margin-bottom: 12px; font-weight: bold; }
-    label { display:block; margin: 10px 0 3px; }
-    input, select { width: 100%; padding: 7px; border-radius: 7px; border: 1px solid #be4299; margin-bottom: 12px; }
-    button { background: #be4299; color: #fff; padding: 11px 0; border: none; border-radius: 8px; width: 100%; font-size: 1.11em; font-weight: bold; cursor: pointer; margin: 8px 0; }
-    button.secondary { background: #bba3b8; }
-    /* vídeo de preview */
-    #video-preview { max-width: 100%; margin: 16px 0; border-radius: 4px; display: none; }
-  </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Boneca Reborn - Oferta Imperdível</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fef6f6;
+        }
+        
+        .price-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .doll-eyes {
+            animation: blink 6s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
 </head>
 <body>
-  <!-- Logo no topo -->
-  <img src="imagens/logo.png" alt="Dream Baby" class="logo">
+<!-- Header/Navbar -->
+<header class="bg-pink-600 text-white shadow-lg">
+<div class="container mx-auto px-4 py-3 flex justify-between items-center">
+<div class="flex items-center">
+<img alt="Dream Baby Logo" height="60" src="imagens/logo.png" width="220"/>
+</div>
+<nav class="hidden md:flex space-x-6">
+<a class="hover:text-pink-200 transition" href="#">Início</a>
+<a class="hover:text-pink-200 transition" href="#">Coleção</a>
+<a class="hover:text-pink-200 transition" href="#">Sobre</a>
+<a class="hover:text-pink-200 transition" href="#">Contato</a>
+</nav>
+<div class="flex items-center space-x-4">
+<i class="fas fa-shopping-cart cursor-pointer hover:text-pink-200 transition"></i>
+<i class="fas fa-user cursor-pointer hover:text-pink-200 transition"></i>
+<button class="md:hidden">
+<i class="fas fa-bars"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8">
+<!-- Promo Banner -->
+<div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl p-4 mb-8 text-white text-center shadow-lg">
+<h2 class="text-2xl font-bold">PROMOÇÃO RELÂMPAGO!</h2>
+<p class="text-lg">De <span class="line-through">R$ 949,90</span> por apenas <span class="text-2xl font-bold">R$ 499,90</span></p>
+<p class="text-sm mt-2">Oferta válida por tempo limitado ou enquanto durarem os estoques!</p>
+</div>
+<!-- Product Section -->
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Product Images -->
+<div class="lg:w-1/2">
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-4 floating">
+<img alt="Boneca Reborn Personalizável" class="w-full h-auto object-cover" src="https://i.ibb.co/ccm81dCX/d15b1ce4-fb31-4593-b08e-8ce4973b273b.png"/>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:ring-2 hover:ring-pink-500 transition">
+<img alt="Boneca Reborn - Vista frontal" class="w-full h-24 object-cover" src="https://i.ibb.co/GQCz4Vc8/4b05e1cd-3853-4fc3-9dba-e01c21ba392b.png"/>
+</div>
+<div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:ring-2 hover:ring-pink-500 transition">
+<img alt="Boneca Reborn - Detalhes" class="w-full h-24 object-cover" src="https://i.ibb.co/4wd4CDvZ/0dcf86be-c8dd-43dc-b16b-424a42e82a19.png"/>
+</div>
+<div class="bg-white rounded-lg shadow overflow-hidden cursor-pointer hover:ring-2 hover:ring-pink-500 transition">
+<img alt="Boneca Reborn - Acessórios" class="w-full h-24 object-cover" src="https://i.ibb.co/B5z7jgp4/4810d872-bb2c-4997-aec1-1b3a1efeb23c.png"/>
+</div>
+</div>
+</div>
+<!-- Product Info -->
+<div class="lg:w-1/2">
+<h1 class="text-3xl font-bold text-gray-800 mb-2">Boneca Reborn Personalizável</h1>
+<p class="text-gray-600 mb-4">A boneca mais realista do mercado, perfeita para colecionadores e amantes de arte reborn</p>
+<div class="flex items-center mb-4">
+<div class="flex text-yellow-400 mr-2">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+</div>
+<span class="text-gray-600">4.8 (128 avaliações)</span>
+</div>
+<div class="bg-pink-50 rounded-lg p-4 mb-6">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-500 line-through text-lg">R$ 949,90</span>
+<span class="bg-red-500 text-white px-6 py-2 rounded-full text-sm font-bold">47% OFF</span>
+</div>
+<div class="flex items-end">
+<span class="text-4xl font-bold text-pink-600">R$ 499,90</span>
+<span class="text-gray-500 ml-2">ou 10x de R$ 49,99 sem juros</span>
+</div>
+</div>
+<div class="mb-6">
+<h3 class="font-bold text-lg mb-2 text-gray-800">Descrição do Produto:</h3>
+<p class="text-gray-600 mb-4">
+                        A Boneca Reborn é uma obra de arte meticulosamente criada com materiais de alta qualidade para alcançar um nível impressionante de realismo. Cada detalhe foi cuidadosamente pintado à mão para criar uma aparência de pele verdadeira, veias delicadas e um tom de pele natural.
+                    </p>
+<ul class="list-disc pl-5 text-gray-600 space-y-1">
+<li>Corpo em vinil premium de alta qualidade</li>
+<li>Cabelos de mohair implantados um a um</li>
+<li>Olhos de vidro que piscam (efeito realista)</li>
+<li>Pintura manual em múltiplas camadas</li>
+<li>Peso e textura similares a um bebê real</li>
+<li>Inclui certificado de autenticidade</li>
+<li>Roupinha de algodão orgânico inclusa</li>
+</ul>
+</div>
+<div class="mb-6">
+<h3 class="font-bold text-lg mb-2 text-gray-800">Tamanho e Detalhes:</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white p-3 rounded-lg shadow-sm">
+<div class="flex items-center">
+<i class="fas fa-ruler-vertical text-pink-500 mr-2"></i>
+<span class="font-medium">Altura:</span>
+</div>
+<p class="text-gray-600 mt-1">45 cm</p>
+</div>
+<div class="bg-white p-3 rounded-lg shadow-sm">
+<div class="flex items-center">
+<i class="fas fa-weight text-pink-500 mr-2"></i>
+<span class="font-medium">Peso:</span>
+</div>
+<p class="text-gray-600 mt-1">1.8 kg</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3 mb-8">
+<div class="flex items-center border border-gray-300 rounded-lg px-4 py-2 bg-white">
+<button class="text-gray-500 text-xl w-8">-</button>
+<input class="w-12 text-center border-0 focus:ring-0" min="1" type="number" value="1"/>
+<button class="text-gray-500 text-xl w-8">+</button>
+</div>
+<a class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg flex-1 flex items-center justify-center transition transform hover:scale-105 bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg flex-1 flex items-center justify-center transition transform hover:scale-105" href="index2.html"><i class="fas fa-shopping-cart mr-2"></i> PERSONALIZE E COMPRE</a>
+<button class="border border-pink-600 text-pink-600 hover:bg-pink-50 font-bold py-3 px-6 rounded-lg flex items-center justify-center transition">
+<i class="far fa-heart mr-2"></i> FAVORITOS
+                    </button>
+</div>
+<div class="bg-yellow-100 border-2-8 border-yellow-400 p-4">
+<div class="flex">
+<div class="flex-shrink-0">
+<i class="fas fa-exclamation-circle text-yellow-400 text-xl"></i>
+</div>
+<div class="ml-3">
+<p class="text-sm text-yellow-700">
+<span class="font-bold">Atenção:</span> Produto artesanal, pequenas variações podem ocorrer. Prazo de produção: 5-7 dias úteis + tempo de envio.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Features Section -->
+<section class="my-16">
+<h2 class="text-2xl font-bold text-center mb-8 text-gray-800">Por que escolher a nossa Boneca Rebonr?</h2>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition">
+<div class="text-pink-500 text-4xl mb-4">
+<i class="fas fa-paint-brush"></i>
+</div>
+<h3 class="font-bold text-lg mb-2">Pintura Realista</h3>
+<p class="text-gray-600">Pintura manual em múltiplas camadas para criar veias, rubor e textura de pele extremamente realistas.</p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition">
+<div class="text-pink-500 text-4xl mb-4">
+<i class="fas fa-hand-holding-heart"></i>
+</div>
+<h3 class="font-bold text-lg mb-2">Materiais Premium</h3>
+<p class="text-gray-600">Corpo em vinil de alta qualidade e cabelos de mohair implantados um a um para máxima autenticidade.</p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition">
+<div class="text-pink-500 text-4xl mb-4">
+<i class="fas fa-certificate"></i>
+</div>
+<h3 class="font-bold text-lg mb-2">Certificado</h3>
+<p class="text-gray-600">Inclui certificado de autenticidade e cuidados para preservar sua boneca por muitos anos.</p>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="my-16 bg-white rounded-xl shadow-md p-8">
+<h2 class="text-2xl font-bold text-center mb-8 text-gray-800">O que dizem nossos clientes</h2>
+<div class="grid md:grid-cols-2 gap-8">
+<div class="border-l-4 border-pink-500 pl-4">
+<div class="flex items-center mb-2">
+<div class="flex text-yellow-400 mr-2">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+</div>
+<span class="font-bold">Ana C.</span>
+</div>
+<p class="text-gray-600 italic">"Comprei a Boneca Reborn para minha coleção e fiquei impressionada com o nível de detalhes. Parece mesmo um bebê de verdade! Todos que veem ficam maravilhados."</p>
+</div>
+<div class="border-l-4 border-pink-500 pl-4">
+<div class="flex items-center mb-2">
+<div class="flex text-yellow-400 mr-2">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+</div>
+<span class="font-bold">Roberta M.</span>
+</div>
+<p class="text-gray-600 italic">"Presenteei minha mãe que adora bonecas reborn. Ela ficou emocionada com a qualidade e realismo. O preço promocional foi um ótimo negócio para um produto tão bem feito."</p>
+</div>
+</div>
+</section>
+<!-- FAQ -->
+<section class="my-16">
+<h2 class="text-2xl font-bold text-center mb-8 text-gray-800">Perguntas Frequentes</h2>
+<div class="bg-white rounded-xl shadow-md overflow-hidden">
+<div class="border-b border-gray-200">
+<button class="faq-question w-full px-6 py-4 text-left font-medium text-gray-700 hover:bg-gray-50 transition flex justify-between items-center">
+<span>Quanto tempo dura a produção e envio?</span>
+<i class="fas fa-chevron-down transition-transform"></i>
+</button>
+<div class="faq-answer px-6 pb-4 hidden">
+<p class="text-gray-600">O prazo de produção é de 5-7 dias úteis. O envio depende da sua localização, mas normalmente leva de 3-10 dias úteis após a conclusão da boneca.</p>
+</div>
+</div>
+<div class="border-b border-gray-200">
+<button class="faq-question w-full px-6 py-4 text-left font-medium text-gray-700 hover:bg-gray-50 transition flex justify-between items-center">
+<span>Como devo cuidar da minha boneca reborn?</span>
+<i class="fas fa-chevron-down transition-transform"></i>
+</button>
+<div class="faq-answer px-6 pb-4 hidden">
+<p class="text-gray-600">Evite exposição prolongada ao sol, umidade excessiva e produtos químicos. Limpe apenas com um pano levemente úmido. Guarde em local seco e arejado quando não estiver em uso.</p>
+</div>
+</div>
+<div class="border-b border-gray-200">
+<button class="faq-question w-full px-6 py-4 text-left font-medium text-gray-700 hover:bg-gray-50 transition flex justify-between items-center">
+<span>A boneca vem com algum certificado?</span>
+<i class="fas fa-chevron-down transition-transform"></i>
+</button>
+<div class="faq-answer px-6 pb-4 hidden">
+<p class="text-gray-600">Sim, cada Boneca Reborn vem com um certificado de autenticidade numerado, contendo informações sobre os materiais utilizados e cuidados especiais.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA -->
+<section class="my-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl p-8 text-white text-center shadow-xl">
+<h2 class="text-2xl font-bold mb-4">Não perca esta oferta exclusiva!</h2>
+<p class="text-xl mb-6">De <span class="line-through">R$ 949,90</span> por apenas <span class="text-3xl font-bold">R$ 499,90</span></p>
+<a class="bg-white text-pink-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg transition transform hover:scale-105" href="index2.html"><i class="fas fa-gift mr-2"></i>COMPRAR AGORA</a>
+<div class="mt-4 flex items-center justify-center">
+<i class="fas fa-shield-alt mr-2"></i>
+<span>Compra 100% segura | Entrega garantida</span>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-12">
+<div class="container mx-auto px-4">
+<div class="grid md:grid-cols-4 gap-8">
+<div>
+<h3 class="text-xl font-bold mb-4">Bonecas Reborn</h3>
+<p class="text-gray-400">Arte em forma de bonecas realistas, criadas com paixão e atenção aos detalhes.</p>
+</div>
+<div>
+<h4 class="font-bold mb-4">Links Úteis</h4>
+<ul class="space-y-2">
+<li><a class="text-gray-400 hover:text-white transition" href="#">Minha conta</a></li>
+<li><a class="text-gray-400 hover:text-white transition" href="#">Rastrear pedido</a></li>
+<li><a class="text-gray-400 hover:text-white transition" href="#">Política de trocas</a></li>
+<li><a class="text-gray-400 hover:text-white transition" href="#">Termos de serviço</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-4">Atendimento</h4>
+<ul class="space-y-2">
+<li class="flex items-center">
+<i class="fas fa-phone-alt mr-2 text-gray-400"></i>
+<span class="text-gray-400">(11) 98765-4321</span>
+</li>
+<li class="flex items-center">
+<i class="fas fa-envelope mr-2 text-gray-400"></i>
+<span class="text-gray-400">contato@bonecasreborn.com</span>
+</li>
+<li class="flex items-center">
+<i class="fas fa-clock mr-2 text-gray-400"></i>
+<span class="text-gray-400">Seg-Sex: 9h-18h</span>
+</li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-4">Redes Sociais</h4>
+<div class="flex space-x-4">
+<a class="bg-gray-700 hover:bg-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition" href="#">
+<i class="fab fa-facebook-f"></i>
+</a>
+<a class="bg-gray-700 hover:bg-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition" href="#">
+<i class="fab fa-instagram"></i>
+</a>
+<a class="bg-gray-700 hover:bg-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition" href="#">
+<i class="fab fa-pinterest-p"></i>
+</a>
+<a class="bg-gray-700 hover:bg-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition" href="#">
+<i class="fab fa-youtube"></i>
+</a>
+</div>
+<div class="mt-4">
+<p class="text-gray-400">Assine nossa newsletter:</p>
+<div class="flex mt-2">
+<input class="px-3 py-2 bg-gray-700 text-white rounded-l focus:outline-none w-full" placeholder="Seu e-mail" type="email"/>
+<button class="bg-pink-600 hover:bg-pink-700 px-4 rounded-r transition">
+<i class="fas fa-paper-plane"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+<p>© 2023 Bonecas Reborn. Todos os direitos reservados.</p>
+</div>
+</div>
+</footer>
+<!-- Floating WhatsApp -->
+<div class="fixed bottom-6 right-6 z-50">
+<a class="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-110" href="https://api.whatsapp.com/send/?phone=5571996731931">
+<i class="fab fa-whatsapp text-2xl"></i>
+</a>
+</div>
+<script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('i');
+                
+                answer.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
 
-  <div class="main">
-    <h2>Personalize sua Boneca Reborn</h2>
-    <span id="step-indicator"></span>
-
-    <!-- 1: Nome -->
-    <div class="step" id="step-1">
-      <label>Nome completo</label>
-      <input type="text" id="nome">
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 2: CEP -->
-    <div class="step" id="step-2">
-      <label>CEP</label>
-      <input type="text" id="cep" placeholder="00000-000" onblur="consultaCEP()">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 3: Endereço + Número -->
-    <div class="step" id="step-3">
-      <label>Endereço (logradouro)</label>
-      <input type="text" id="endereco" placeholder="Rua, Av., etc.">
-      <label>Número</label>
-      <input type="text" id="numero" placeholder="Número da casa">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 4: Cidade -->
-    <div class="step" id="step-4">
-      <label>Cidade</label>
-      <input type="text" id="cidade">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 5: Estado -->
-    <div class="step" id="step-5">
-      <label>Estado</label>
-      <input type="text" id="estado">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 6: Telefone -->
-    <div class="step" id="step-6">
-      <label>Telefone</label>
-      <input type="text" id="telefone" placeholder="(00) 90000-0000">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 7: Email -->
-    <div class="step" id="step-7">
-      <label>Email</label>
-      <input type="email" id="email" placeholder="seu@email.com">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 8: Escolha da Boneca -->
-    <div class="step" id="step-8">
-      <label>Nome da boneca</label>
-      <select id="nome-boneca">
-        <option value="Sofia">Sofia</option>
-        <option value="Valentina">Valentina</option>
-        <option value="Maria">Maria</option>
-      </select>
-      <!-- preview de vídeo -->
-      <video id="video-preview" controls autoplay muted loop playsinline>
-        <source src="" type="video/mp4">
-        Seu navegador não suporta vídeo.
-      </video>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 9: Cor do Cabelo -->
-    <div class="step" id="step-9">
-      <label>Cor do cabelo</label>
-      <select id="cor-cabelo">
-        <option value="Castanho">Castanho</option>
-        <option value="Loiro">Loiro</option>
-        <option value="Preto">Preto</option>
-        <option value="Ruivo">Ruivo</option>
-      </select>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
-
-    <!-- 10: Pagamento -->
-    <div class="step" id="step-10">
-      <label>Forma de pagamento</label>
-      <select id="pagamento">
-        <option value="Pix">Pix</option>
-        <option value="Cartão">Cartão de Crédito</option>
-      </select>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="verificaPagamento()">Próximo</button>
-    </div>
-
-    <!-- 11: Resumo -->
-    <div class="step" id="step-11">
-      <h3>Resumo</h3>
-      <div id="resumo"></div>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="finalizarPedido()">Finalizar</button>
-    </div>
-
-    <!-- Final -->
-    <div class="step" id="step-final">
-      <h3>Pedido realizado!</h3>
-      <p>Seu pedido foi registrado. Entraremos em contato para confirmação.</p>
-    </div>
-  </div>
-
-  <script>
-    let step = 1;
-    const totalSteps = 11;
-    const VALOR_PRODUTO = 499.90;
-
-    function showStep(n) {
-      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-      const id = n <= totalSteps ? 'step-' + n : 'step-final';
-      document.getElementById(id)?.classList.add('active');
-      document.getElementById('step-indicator').textContent =
-        n <= totalSteps ? `Etapa ${n} de ${totalSteps}` : '';
-      if (n === 8) updateVideoPreview();
-      if (n === totalSteps) buildResumo();
-    }
-
-    function nextStep() {
-      if (step === 2) {
-        const c = document.getElementById('cep').value.replace(/\D/g, '');
-        if (!/^[0-9]{8}$/.test(c)) {
-          alert('CEP inválido. Digite 8 dígitos.'); return;
+        // Countdown Timer (optional)
+        function updateCountdown() {
+            const now = new Date();
+            const target = new Date();
+            target.setHours(23, 59, 59, 0);
+            
+            if (now > target) {
+                target.setDate(target.getDate() + 1);
+            }
+            
+            const diff = target - now;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('countdown-minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('countdown-seconds').textContent = seconds.toString().padStart(2, '0');
         }
-        localStorage.setItem('cep', c);
-      }
-      if (step === 6) {
-        const tel = document.getElementById('telefone').value.replace(/\D/g, '');
-        if (!/^[1-9][0-9]9[0-9]{8}$/.test(tel)) {
-          alert('Telefone inválido. Use (AA) 9XXXX-XXXX.'); return;
-        }
-        localStorage.setItem('telefone', tel);
-      }
-      if (step === 7) {
-        localStorage.setItem('email', document.getElementById('email').value);
-      }
-      if (step === 8) {
-        localStorage.setItem('boneca', document.getElementById('nome-boneca').value);
-      }
-      if (step === 9) {
-        localStorage.setItem('cabelo', document.getElementById('cor-cabelo').value);
-      }
-      step++; showStep(step);
-    }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
 
-    function prevStep() {
-      if (step > 1) { step--; showStep(step); }
-    }
-
-    function consultaCEP() {
-      const cep = document.getElementById('cep').value.replace(/\D/g, '');
-      if (!/^[0-9]{8}$/.test(cep)) return;
-      fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then(r => r.json())
-        .then(data => {
-          if (data.erro) throw 'CEP não encontrado';
-          document.getElementById('endereco').value = data.logradouro || '';
-          document.getElementById('cidade').value   = data.localidade || '';
-          document.getElementById('estado').value   = data.uf || '';
-        })
-        .catch(() => alert('Erro ao buscar CEP.'));
-    }
-
-    function verificaPagamento() {
-      const forma = document.getElementById('pagamento').value;
-      window.location.href = forma === 'Pix' ? 'pagamento-pix.html' : 'pagamento-cartao.html';
-    }
-
-    function updateVideoPreview() {
-      const sel = document.getElementById('nome-boneca');
-      const vid = document.getElementById('video-preview');
-      const name = sel.value;
-      vid.querySelector('source').src = `videos/${name}.mp4`;
-      vid.load();
-      vid.style.display = 'block';
-    }
-
-    function buildResumo() {
-      const cep   = localStorage.getItem('cep')     || '';
-      const tel   = localStorage.getItem('telefone')|| '';
-      const email = localStorage.getItem('email')   || '';
-      const bone  = localStorage.getItem('boneca')  || '';
-      const cab   = localStorage.getItem('cabelo')  || '';
-      document.getElementById('resumo').innerHTML = `
-        <p><strong>Nome:</strong> ${document.getElementById('nome').value}</p>
-        <p><strong>Endereço:</strong> ${document.getElementById('endereco').value}, ${document.getElementById('numero').value} – ${document.getElementById('cidade').value}/${document.getElementById('estado').value} – CEP: ${cep.slice(0,5)}-${cep.slice(5)}</p>
-        <p><strong>Telefone:</strong> (${tel.slice(0,2)}) ${tel.slice(2,7)}-${tel.slice(7)}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Boneca:</strong> ${bone}</p>
-        <p><strong>Cor do cabelo:</strong> ${cab}</p>
-        <p><strong>Pagamento:</strong> ${document.getElementById('pagamento').value}</p>
-        <p><strong>Valor:</strong> R$ ${VALOR_PRODUTO.toFixed(2).replace('.',',')}</p>
-      `;
-    }
-
-    function finalizarPedido() {
-      step++; showStep(step);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('nome-boneca').addEventListener('change', updateVideoPreview);
-      showStep(step);
-    });
-  </script>
-</body>
+        // Image Gallery
+        const thumbnails = document.querySelectorAll('.grid.grid-cols-3 img');
+        const mainImage = document.querySelector('.bg-white.rounded-xl.shadow-lg img');
+        
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const newSrc = thumb.src;
+                mainImage.src = newSrc;
+                
+                // Add animation
+                mainImage.classList.add('opacity-0');
+                setTimeout(() => {
+                    mainImage.classList.remove('opacity-0');
+                }, 300);
+            });
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img alt="DeepSite Logo" src="https://enzostvs-deepsite.hf.space/logo.svg" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"/><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank">DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Buonavventuriero/boneca-pagia-pedro" style="color: #fff;text-decoration: underline;" target="_blank">Remix</a></p></body>
 </html>

@@ -1,0 +1,37 @@
+/* style.css */
+
+/* Fonte principal */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fef6f6;
+}
+
+/* Animação de “pulse” para o Badge de preço */
+.price-badge {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Animação de “blink” para os olhos da boneca */
+.doll-eyes {
+  animation: blink 6s infinite;
+}
+@keyframes blink {
+  0%,45%,55%,100% { transform: scaleY(1); }
+  50%             { transform: scaleY(0.1); }
+}
+
+/* Animação de “float” para elementos flutuantes */
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-20px); }
+}
