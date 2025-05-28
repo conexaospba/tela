@@ -26,6 +26,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+
+app.get('/admin', (req, res) => {
+    const senha = req.query.senha;
+    if (senha === 'asap') {
+        res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    } else {
+        res.status(401).send('Acesso não autorizado');
+    }
+});
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
