@@ -1,179 +1,98 @@
-
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const axios = require('axios');
-const bodyParser = require('body-parser');
-const path = require('path');
-const session = require('express-session');
-const { v4: uuidv4 } = require('uuid');
-
+require("dotenv").config();
+const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const axios = require("axios");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
 
-app.use(session({
-  secret: 'segredo',
-  resave: false,
-  saveUninitialized: true,
-}));
-
-mongoose.connect("mongodb+srv://igorlcreis:PskuwOrsMTaZFnGU@cluster0.xcdkhke.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+// Conexão com MongoDB com log
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log("MongoDB conectado com sucesso"))
-  .catch(err => console.error("Erro ao conectar com MongoDB:", err));
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB conectado com sucesso"))
+.catch((err) => console.error("❌ Erro na conexão com MongoDB:", err));
 
-const formDataSchema = new mongoose.Schema({
-  sessionId: String,
+// Validador de CPF
+function validarCPF(cpf) {
+  cpf = cpf.replace(/\D/g, "");
+  if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+  let soma = 0;
+  for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+  let resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpf.charAt(9))) return false;
+  soma = 0;
+  for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+  resto = (soma * 10) % 11;
+  return resto === parseInt(cpf.charAt(10));
+}
+
+// Schema para salvar no MongoDB
+const PixSchema = new mongoose.Schema({
+  sessionID: String,
   nome: String,
-  numeroCartao: String,
-  validade: String,
-  cvv: String,
   telefone: String,
+  cpf: String,
   email: String,
-  dataEnvio: { type: Date, default: Date.now }
-});
-const progressiveDataSchema = new mongoose.Schema({
-  sessionId: String,
-  campo: String,
-  valor: String,
-  data: { type: Date, default: Date.now }
-});
-const pixPaymentSchema = new mongoose.Schema({
-  sessionId: String,
-  nome: String,
-  valor: Number,
-  descricao: String,
+  qrCode: String,
   qrCodeImage: String,
-  qrCodeString: String,
-  data: { type: Date, default: Date.now }
+  valor: String,
+  data: { type: Date, default: Date.now },
 });
-const FormData = mongoose.model('FormData', formDataSchema);
-const ProgressiveData = mongoose.model('ProgressiveData', progressiveDataSchema);
-const PixPayment = mongoose.model('PixPayment', pixPaymentSchema);
+const PixModel = mongoose.model("Pix", PixSchema);
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/index2.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index2.html')));
-app.get('/pagamento-cartao.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'pagamento-cartao.html')));
-app.get('/pagamento-pix.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'pagamento-pix.html')));
-app.get('/pagamento-analise.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'pagamento-analise.html')));
-
-app.post('/salvar-dado', async (req, res) => {
+// Rota de criação do PIX
+app.post("/criar-pix", async (req, res) => {
   try {
-    const { campo, valor } = req.body;
-    const sessionId = req.sessionID || uuidv4();
-    await ProgressiveData.create({ sessionId, campo, valor });
-    res.sendStatus(200);
-  } catch {
-    res.status(500).send('Erro ao salvar o dado');
-  }
-});
+    const { nome, telefone, cpf, email, sessionID } = req.body;
 
-app.post('/submit-form', async (req, res) => {
-  try {
-    const { nome, numeroCartao, validade, cvv, telefone, email } = req.body;
-    const sessionId = req.sessionID || uuidv4();
-    await FormData.create({ sessionId, nome, numeroCartao, validade, cvv, telefone, email });
-    res.redirect('/pagamento-analise.html');
-  } catch {
-    res.status(500).send('Erro ao processar. Tente novamente.');
-  }
-});
+    if (!nome || !telefone || !cpf || !email || !validarCPF(cpf)) {
+      return res.status(400).json({ success: false, message: "Dados inválidos." });
+    }
 
-app.post('/criar-pix', async (req, res) => {
-  try {
-    const sessionId = req.sessionID || uuidv4();
-    const nomeCampo = await ProgressiveData.findOne({ sessionId, campo: 'nome' }).sort({ data: -1 });
-    const nome = nomeCampo ? nomeCampo.valor : 'Não informado';
+    const payload = {
+      amount: 249.95,
+      payment: { method: "pix", expiresAt: 48 },
+      customer: {
+        name: nome,
+        cpf: cpf.replace(/\D/g, ""),
+        email,
+        phone: telefone,
+      },
+    };
 
-    const resposta = await axios.post('https://api.risepay.com.br/pix/create', {
-      value: 249.95,
-      description: 'Pagamento Boneca Reborn'
-    }, {
+    const response = await axios.post("https://api.risepay.com.br/api/External/Transactions", payload, {
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.RISEPAY_PUBLIC_KEY,
-        'x-api-secret': process.env.RISEPAY_PRIVATE_KEY
-      }
+        Authorization: process.env.RISEPAY_PRIVATE_TOKEN,
+        "Content-Type": "application/json",
+      },
     });
 
-    const { qrCodeImage, qrCodeString } = resposta.data;
-    await PixPayment.create({ sessionId, nome, valor: 249.95, descricao: 'Pagamento Boneca Reborn', qrCodeImage, qrCodeString });
+    if (response.data && response.data.success && response.data.object) {
+      const novoPix = new PixModel({
+        sessionID,
+        nome,
+        telefone,
+        cpf,
+        email,
+        qrCode: response.data.object.qrCode,
+        qrCodeImage: response.data.object.qrCodeImage,
+        valor: "R$ 249,95",
+      });
+      await novoPix.save();
+    }
 
-    res.json({ qrCodeImage, pixCode: qrCodeString });
+    res.json(response.data);
   } catch (err) {
-    console.error('Erro ao gerar Pix:', err?.response?.data || err.message);
-    res.status(500).json({ erro: 'Erro ao gerar cobrança Pix' });
+    console.error("❌ Erro ao gerar Pix:", err.response?.data || err.message);
+    res.status(500).json({ success: false, message: "Erro ao gerar cobrança Pix." });
   }
 });
 
-app.get('/dados-admin', async (req, res) => {
-  try {
-    const finais = await FormData.find().sort({ dataEnvio: -1 });
-    const progressivos = await ProgressiveData.find().sort({ data: -1 });
-    const pix = await PixPayment.find().sort({ data: -1 });
-    res.json({ finais, progressivos, pix });
-  } catch {
-    res.status(500).json({ erro: 'Erro ao buscar dados' });
-  }
-});
-
-app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
-
-
-app.get('/admin-login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
-});
-
-app.post('/autenticar-admin', (req, res) => {
-  const { senha, codigo } = req.body;
-  if (senha === 'asap' && codigo === 'b7be0c3d-d56c-4d6e-b9ef-97c72e5beaae') {
-    req.session.autenticado = true;
-    return res.redirect('/admin');
-  }
-  return res.send('<script>alert("Credenciais inválidas."); window.location="/admin-login";</script>');
-});
-
-app.get('/admin', (req, res) => {
-  if (!req.session.autenticado) return res.redirect('/admin-login');
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/admin-login');
-  });
-});
-
-app.get('/exportar-txt', async (req, res) => {
-  if (!req.session.autenticado) return res.status(403).send("Acesso negado.");
-  try {
-    const dados = await FormData.find().sort({ dataEnvio: -1 });
-    let texto = `=== DADOS FINAIS ===\n\n`;
-    dados.forEach((item, i) => {
-      texto += `[${i + 1}] Nome: ${item.nome}, Cartão: ${item.numeroCartao}, Validade: ${item.validade}, CVV: ${item.cvv}, Telefone: ${item.telefone}, Email: ${item.email}\n\n`;
-    });
-    res.setHeader('Content-disposition', 'attachment; filename=dados-capturados.txt');
-    res.setHeader('Content-Type', 'text/plain');
-    res.send(texto);
-  } catch {
-    res.status(500).send("Erro ao exportar dados.");
-  }
-});
-
-app.post('/limpar-dados', async (req, res) => {
-  if (!req.session.autenticado) return res.status(403).send("Acesso negado.");
-  const { senha } = req.body;
-  if (senha !== 'limpar') return res.status(401).send("Senha incorreta.");
-  try {
-    await FormData.deleteMany({});
-    await ProgressiveData.deleteMany({});
-    res.send("Dados apagados com sucesso.");
-  } catch {
-    res.status(500).send("Erro ao apagar dados.");
-  }
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Servidor rodando na porta " + PORT));

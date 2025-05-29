@@ -1,41 +1,83 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pagamento via Pix - RisePay</title>
+  <title>Pagamento via Pix</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 30px; }
-    .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-    h2 { color: #d63384; }
-    #qrcode { text-align: center; margin-top: 20px; }
-    #pixcopiacola { background: #eee; padding: 10px; margin-top: 10px; border-radius: 5px; word-break: break-all; }
-    button { background: #d63384; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; margin-top: 20px; cursor: pointer; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fefefe;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #qrcode img {
+      margin-top: 20px;
+      max-width: 300px;
+    }
+
+    textarea {
+      width: 80%;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #mensagem {
+      color: red;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Pagamento via Pix</h2>
-    <p>Você ganhou <strong>50% de desconto</strong> pagando via Pix! O valor com desconto é <strong>R$ 249,95</strong>.</p>
+  <h1>Pagamento com Pix</h1>
+  <p>Você terá um desconto especial: <strong>R$ 249,95</strong></p>
+  <button id="gerarPix">Gerar QR Code</button>
 
-    <button onclick="gerarPix()">Gerar Código Pix</button>
-
-    <div id="qrcode"></div>
-    <div id="pixcopiacola"></div>
-  </div>
+  <div id="qrcode"></div>
+  <div id="mensagem"></div>
 
   <script>
-    async function gerarPix() {
-      const resposta = await fetch("/criar-pix", { method: "POST" });
-      const resultado = await resposta.json();
+    document.getElementById("gerarPix").addEventListener("click", async () => {
+      const nome = localStorage.getItem("nomeComprador");
+      const cpf = localStorage.getItem("cpf");
+      const email = localStorage.getItem("email");
+      const telefone = localStorage.getItem("telefone");
+      const sessionID = localStorage.getItem("sessionID");
 
-      if (resposta.ok) {
-        document.getElementById("qrcode").innerHTML = '<img src="' + resultado.qrCodeImage + '" alt="QR Code Pix" width="250">';
-        document.getElementById("pixcopiacola").innerText = resultado.pixCode;
-      } else {
-        alert("Erro ao gerar cobrança Pix.");
+      if (!nome || !cpf || !email || !telefone || !sessionID) {
+        document.getElementById("mensagem").textContent = "Dados incompletos. Retorne e preencha os dados corretamente.";
+        return;
       }
-    }
+
+      try {
+        const response = await fetch("/criar-pix", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, cpf, email, telefone, sessionID }),
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.object) {
+          document.getElementById("qrcode").innerHTML = `
+            <img src="${data.object.qrCodeImage}" alt="QR Code Pix" />
+            <p>Código Pix Copia e Cola:</p>
+            <textarea rows="3" readonly>${data.object.qrCode}</textarea>
+          `;
+          document.getElementById("mensagem").textContent = "";
+        } else {
+          document.getElementById("mensagem").textContent = data.message || "Erro ao gerar cobrança Pix.";
+        }
+      } catch (err) {
+        document.getElementById("mensagem").textContent = "Erro de conexão com o servidor.";
+      }
+    });
   </script>
 </body>
 </html>

