@@ -2,80 +2,132 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Pagamento via Pix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pagamento via Pix - Dream Baby</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fefefe;
-      padding: 20px;
+      margin: 0;
+      padding: 40px;
+      background-color: #fdf6f8;
+      color: #333;
+    }
+
+    h2 {
       text-align: center;
+      margin-bottom: 30px;
     }
 
-    #qrcode img {
-      margin-top: 20px;
-      max-width: 300px;
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    textarea {
-      width: 80%;
-      margin-top: 10px;
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
     }
 
     button {
-      padding: 10px 20px;
-      margin-top: 20px;
-      font-size: 16px;
+      background-color: #ec008c;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 16px;
+      width: 100%;
     }
 
-    #mensagem {
-      color: red;
-      margin-top: 10px;
+    #resultado {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    #resultado img {
+      max-width: 300px;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-  <h1>Pagamento com Pix</h1>
-  <p>Você terá um desconto especial: <strong>R$ 249,95</strong></p>
-  <button id="gerarPix">Gerar QR Code</button>
+  <h2>Pagamento via Pix</h2>
+  <form id="formPix">
+    <input type="text" id="nome" placeholder="Nome completo" required />
+    <input type="text" id="cpf" placeholder="CPF (somente números)" required />
+    <input type="email" id="email" placeholder="E-mail válido" required />
+    <input type="tel" id="telefone" placeholder="Telefone com DDD" required />
+    <button type="submit">Gerar QR Code Pix</button>
+  </form>
 
-  <div id="qrcode"></div>
-  <div id="mensagem"></div>
+  <div id="resultado"></div>
 
   <script>
-    document.getElementById("gerarPix").addEventListener("click", async () => {
-      const nome = localStorage.getItem("nomeComprador");
-      const cpf = localStorage.getItem("cpf");
-      const email = localStorage.getItem("email");
-      const telefone = localStorage.getItem("telefone");
-      const sessionID = localStorage.getItem("sessionID");
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/[^\d]+/g, '');
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      return resto === parseInt(cpf.charAt(10));
+    }
 
-      if (!nome || !cpf || !email || !telefone || !sessionID) {
-        document.getElementById("mensagem").textContent = "Dados incompletos. Retorne e preencha os dados corretamente.";
+    document.getElementById("formPix").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const cpf = document.getElementById("cpf").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+
+      if (!nome || !cpf || !email || !telefone) {
+        alert("Por favor, preencha todos os campos.");
         return;
       }
 
+      if (!validarCPF(cpf)) {
+        alert("CPF inválido. Digite um CPF válido.");
+        return;
+      }
+
+      const dados = { nome, cpf, email, telefone };
+
       try {
-        const response = await fetch("/criar-pix", {
+        const response = await fetch("/gerar-pix", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nome, cpf, email, telefone, sessionID }),
+          body: JSON.stringify(dados),
         });
 
         const data = await response.json();
 
-        if (data.success && data.object) {
-          document.getElementById("qrcode").innerHTML = `
-            <img src="${data.object.qrCodeImage}" alt="QR Code Pix" />
-            <p>Código Pix Copia e Cola:</p>
-            <textarea rows="3" readonly>${data.object.qrCode}</textarea>
+        if (data.success && data.data.qrCodeImage) {
+          document.getElementById("resultado").innerHTML = `
+            <h3>Escaneie o QR Code para pagar</h3>
+            <img src="${data.data.qrCodeImage}" alt="QR Code Pix" />
+            <p><strong>Código Pix Copia e Cola:</strong></p>
+            <textarea rows="4" style="width:100%;font-size:14px;">${data.data.qrCodeText}</textarea>
           `;
-          document.getElementById("mensagem").textContent = "";
         } else {
-          document.getElementById("mensagem").textContent = data.message || "Erro ao gerar cobrança Pix.";
+          alert("Erro ao gerar Pix. Tente novamente.");
         }
       } catch (err) {
-        document.getElementById("mensagem").textContent = "Erro de conexão com o servidor.";
+        console.error("Erro ao gerar Pix:", err);
+        alert("Erro de conexão com o servidor.");
       }
     });
   </script>

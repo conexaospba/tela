@@ -1,33 +1,77 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Personalize sua Boneca Reborn</title>
   <style>
-    body { font-family: 'Quicksand', sans-serif; background: #fff0f7; margin: 0; padding: 0; }
-    .logo { display: block; margin: 20px auto; max-width: 150px; }
-    .container {
-      max-width: 500px; margin: 0 auto; background: white;
-      border-radius: 12px; box-shadow: 0 0 10px #ffc6e2; padding: 30px;
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #fff0f7;
+      margin: 0;
+      padding: 0;
     }
-    h2 { color: #be4299; text-align: center; }
-    .step { display: none; }
-    .step.active { display: block; }
-    label { margin-top: 12px; display: block; font-weight: bold; }
+    .logo {
+      display: block;
+      margin: 20px auto;
+      max-width: 150px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ffc6e2;
+      padding: 30px;
+    }
+    h2 {
+      color: #be4299;
+      text-align: center;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    label {
+      margin-top: 12px;
+      display: block;
+      font-weight: bold;
+    }
     input, select {
-      width: 100%; padding: 10px; margin-top: 5px;
-      border-radius: 8px; border: 1px solid #be4299;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #be4299;
       font-size: 1em;
     }
     button {
-      background: #be4299; color: white; border: none; border-radius: 8px;
-      padding: 12px; margin-top: 20px; font-size: 1em; width: 100%;
+      background: #be4299;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 20px;
+      font-size: 1em;
+      width: 100%;
       cursor: pointer;
     }
-    button.secondary { background: #bbb; }
-    video { width: 100%; margin-top: 10px; border-radius: 8px; display: none; }
-    #step-indicator { text-align: center; font-weight: bold; margin-bottom: 10px; }
+    button.secondary {
+      background: #bbb;
+    }
+    video {
+      width: 100%;
+      max-height: 300px;
+      margin-top: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+    #step-indicator {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -36,45 +80,54 @@
     <h2>Personalize sua Boneca Reborn</h2>
     <div id="step-indicator"></div>
 
+    <!-- ETAPA 1 -->
     <div class="step active" id="step-1">
       <label for="nome">Nome completo</label>
       <input type="text" id="nome" required>
       <button onclick="nextStep()">Próximo</button>
     </div>
 
+    <!-- ETAPA 2 -->
     <div class="step" id="step-2">
       <label for="cpf">CPF</label>
-      <input type="text" id="cpf" placeholder="000.000.000-00" required>
+      <input type="text" id="cpf" placeholder="000.000.000-00">
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="validateCPF()">Próximo</button>
     </div>
 
+    <!-- ETAPA 3 -->
     <div class="step" id="step-3">
       <label for="telefone">Telefone</label>
-      <input type="tel" id="telefone" placeholder="(00) 00000-0000" required>
+      <input type="text" id="telefone" placeholder="(00) 90000-0000">
       <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
+      <button onclick="validatePhone()">Próximo</button>
     </div>
 
+    <!-- ETAPA 4 -->
     <div class="step" id="step-4">
-      <label for="email">E-mail</label>
-      <input type="email" id="email" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="seu@email.com">
       <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
+      <button onclick="validateEmail()">Próximo</button>
     </div>
 
+    <!-- ETAPA 5 -->
     <div class="step" id="step-5">
       <label for="boneca">Nome da boneca</label>
-      <select id="boneca" onchange="trocarVideo()">
-        <option value="Maria">Maria</option>
+      <select id="boneca" onchange="showVideo()">
         <option value="Sofia">Sofia</option>
         <option value="Valentina">Valentina</option>
+        <option value="Maria">Maria</option>
       </select>
-      <video id="videoBoneca" controls autoplay muted loop></video>
+      <video id="video-preview" controls autoplay muted loop playsinline>
+        <source id="video-source" src="" type="video/mp4">
+        Seu navegador não suporta vídeo.
+      </video>
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
 
+    <!-- ETAPA 6 -->
     <div class="step" id="step-6">
       <label for="cabelo">Cor do cabelo</label>
       <select id="cabelo">
@@ -83,120 +136,89 @@
         <option value="Preto">Preto</option>
         <option value="Ruivo">Ruivo</option>
       </select>
-      <label for="olhos">Cor dos olhos</label>
-      <select id="olhos">
-        <option value="Azuis">Azuis</option>
-        <option value="Verdes">Verdes</option>
-        <option value="Castanhos">Castanhos</option>
-      </select>
       <button class="secondary" onclick="prevStep()">Voltar</button>
       <button onclick="nextStep()">Próximo</button>
     </div>
 
+    <!-- ETAPA 7 -->
     <div class="step" id="step-7">
       <label for="pagamento">Forma de pagamento</label>
       <select id="pagamento">
-        <option value="pix">Pix (R$ 249,95)</option>
-        <option value="cartao">Cartão de Crédito (R$ 499,90)</option>
+        <option value="Pix">Pix (R$ 249,95)</option>
+        <option value="Cartão">Cartão de Crédito (R$ 499,90)</option>
       </select>
       <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="finalizar()">Finalizar</button>
+      <button onclick="irParaPagamento()">Finalizar</button>
     </div>
   </div>
 
   <script>
-    let stepAtual = 1;
-    const totalEtapas = 7;
+    let step = 1;
 
-    function updateIndicator() {
-      document.getElementById("step-indicator").textContent = "Etapa " + stepAtual + " de " + totalEtapas;
-    }
-
-    function showStep(step) {
-      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-      document.getElementById("step-" + step).classList.add("active");
-      stepAtual = step;
-      updateIndicator();
+    function showStep() {
+      document.querySelectorAll('.step').forEach(div => div.classList.remove('active'));
+      document.getElementById(`step-${step}`).classList.add('active');
+      document.getElementById('step-indicator').textContent = `Etapa ${step} de 7`;
     }
 
     function nextStep() {
-      if (stepAtual < totalEtapas) showStep(stepAtual + 1);
+      step++;
+      showStep();
     }
 
     function prevStep() {
-      if (stepAtual > 1) showStep(stepAtual - 1);
+      step--;
+      showStep();
     }
 
     function validateCPF() {
-      const cpf = document.getElementById("cpf").value.replace(/\D/g, '');
-      let sum = 0, remainder;
-
-      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-        alert("CPF inválido.");
-        return;
-      }
-
-      for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
-      remainder = (sum * 10) % 11;
-      if (remainder === 10 || remainder === 11) remainder = 0;
-      if (remainder !== parseInt(cpf.charAt(9))) {
-        alert("CPF inválido.");
-        return;
-      }
-
-      sum = 0;
-      for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
-      remainder = (sum * 10) % 11;
-      if (remainder === 10 || remainder === 11) remainder = 0;
-      if (remainder !== parseInt(cpf.charAt(10))) {
-        alert("CPF inválido.");
-        return;
-      }
-
+      const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+      if (!/^\d{11}$/.test(cpf)) return alert("CPF inválido");
       nextStep();
     }
 
-    function trocarVideo() {
-      const boneca = document.getElementById("boneca").value;
-      const video = document.getElementById("videoBoneca");
-      video.src = "videos/" + boneca + ".mp4";
-      video.style.display = "block";
+    function validatePhone() {
+      const tel = document.getElementById('telefone').value.replace(/\D/g, '');
+      if (!/^(\d{2})(9\d{8})$/.test(tel)) return alert("Telefone inválido");
+      nextStep();
     }
 
-    function finalizar() {
-      const nome = document.getElementById("nome").value;
-      const cpf = document.getElementById("cpf").value;
-      const telefone = document.getElementById("telefone").value;
-      const email = document.getElementById("email").value;
-      const boneca = document.getElementById("boneca").value;
-      const cabelo = document.getElementById("cabelo").value;
-      const olhos = document.getElementById("olhos").value;
-      const pagamento = document.getElementById("pagamento").value;
-      const sessionID = crypto.randomUUID();
-
-      if (!nome || !cpf || !telefone || !email) {
-        alert("Preencha todos os dados corretamente.");
-        return;
-      }
-
-      localStorage.setItem("nomeComprador", nome);
-      localStorage.setItem("cpf", cpf);
-      localStorage.setItem("telefone", telefone);
-      localStorage.setItem("email", email);
-      localStorage.setItem("boneca", boneca);
-      localStorage.setItem("cabelo", cabelo);
-      localStorage.setItem("olhos", olhos);
-      localStorage.setItem("pagamento", pagamento);
-      localStorage.setItem("sessionID", sessionID);
-
-      if (pagamento === "pix") {
-        window.location.href = "pagamento-pix.html";
-      } else {
-        window.location.href = "pagamento-cartao.html";
-      }
+    function validateEmail() {
+      const email = document.getElementById('email').value;
+      const re = /\S+@\S+\.\S+/;
+      if (!re.test(email)) return alert("Email inválido");
+      nextStep();
     }
 
-    updateIndicator();
+    function showVideo() {
+      const boneca = document.getElementById('boneca').value;
+      const video = document.getElementById('video-preview');
+      document.getElementById('video-source').src = `videos/${boneca}.mp4`;
+      video.load();
+      video.style.display = 'block';
+    }
+
+    function irParaPagamento() {
+      const nome      = document.getElementById('nome').value;
+      const cpf       = document.getElementById('cpf').value;
+      const telefone  = document.getElementById('telefone').value;
+      const email     = document.getElementById('email').value;
+      const boneca    = document.getElementById('boneca').value;
+      const cabelo    = document.getElementById('cabelo').value;
+      const pagamento = document.getElementById('pagamento').value;
+
+      localStorage.setItem('nome', nome);
+      localStorage.setItem('cpf', cpf);
+      localStorage.setItem('telefone', telefone);
+      localStorage.setItem('email', email);
+      localStorage.setItem('boneca', boneca);
+      localStorage.setItem('cabelo', cabelo);
+
+      const destino = pagamento === 'Pix' ? 'pagamento-pix.html' : 'pagamento-cartao.html';
+      window.location.href = destino;
+    }
+
+    showStep();
   </script>
 </body>
 </html>
