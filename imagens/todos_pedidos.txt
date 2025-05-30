@@ -1,0 +1,34 @@
+=== Todos os Pedidos ===
+
+--- ebert r lima (27/05/2025, 19:52:59) ---
+nome_titular: ebert r lima
+numero_cartao: 4350870064231198
+validade: 03/26
+cvv: 000
+telefone: 71996410911
+email: rnatividadeltda@hotmail.com
+
+--- iria cavalcante (27/05/2025, 18:16:36) ---
+nome_titular: iria cavalcante
+numero_cartao: 4282672683906074
+validade: 02/55
+cvv: 223
+telefone: 2125546695
+email: igor@igor.com
+
+--- IGOR REIIIIIIIIIS (27/05/2025, 18:02:16) ---
+nome_titular: IGOR REIIIIIIIIIS
+numero_cartao: 4282672683906074
+validade: 02/33
+cvv: 266
+telefone: 
+email: 
+
+--- easfasdfdsfsdf (27/05/2025, 18:00:55) ---
+nome_titular: easfasdfdsfsdf
+numero_cartao: 4282672683906074
+validade: 02/55
+cvv: 055
+telefone: 
+email: 
+

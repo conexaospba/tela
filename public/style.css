@@ -1,0 +1,293 @@
+/* Reset e fontes */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #fffdfd;
+  color: #333;
+}
+
+h1, h2, h3 {
+  font-family: 'Dancing Script', cursive;
+  color: #c3145f;
+  margin: 10px 0;
+}
+
+button {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ff69b4;
+  border: none;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #e958a3;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 192, 203, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.modal-box h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.modal-box .valor {
+  font-size: 18px;
+  margin: 15px 0;
+}
+
+.modal-box span {
+  color: #c3145f;
+  font-weight: bold;
+}
+
+/* Cabeçalho */
+.topo {
+  text-align: center;
+  padding: 30px 10px 10px;
+}
+
+.logo {
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.titulo {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.temporizador {
+  margin-top: 8px;
+  font-weight: 600;
+  color: #e60073;
+}
+
+/* Bonecas */
+.bonecas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 20px;
+}
+
+.modelo {
+  text-align: center;
+  max-width: 230px;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.modelo:hover {
+  transform: scale(1.05);
+}
+
+.modelo img {
+  width: 100%;
+  border-radius: 15px;
+}
+
+.modelo h3 {
+  margin-top: 8px;
+  font-size: 18px;
+  font-family: 'Dancing Script', cursive;
+}
+
+/* Descrição */
+.descricao {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 15px;
+  text-align: center;
+  font-size: 16px;
+  background: #fff0f5;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}
+
+/* Carrossel FIXO e Elegante */
+.carrossel {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 20px;
+  background: #ffe4ec;
+  font-weight: 600;
+  color: #b92b6b;
+  text-align: center;
+  font-size: 16px;
+}
+
+.carrossel.destaque div {
+  min-width: auto;
+}
+
+/* Oferta */
+.oferta {
+  background-color: #fff8fb;
+  padding: 30px;
+  text-align: center;
+  font-size: 18px;
+}
+
+/* Depoimentos */
+.depoimentos {
+  padding: 40px 20px;
+  background: #fff;
+  text-align: center;
+}
+
+.depoimentos h2 {
+  margin-bottom: 20px;
+}
+
+.slide {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.slide p {
+  background: #ffe8f0;
+  padding: 15px;
+  border-radius: 15px;
+  min-width: 250px;
+  font-size: 15px;
+}
+
+/* FAQ DESTACADO */
+.faq {
+  padding: 50px 20px;
+  background: #fffefc;
+  text-align: center;
+  border-top: 3px solid #ffd2e3;
+  border-bottom: 3px solid #ffd2e3;
+}
+
+.faq h2 {
+  margin-bottom: 30px;
+  font-size: 30px;
+  font-family: 'Dancing Script', cursive;
+  color: #c3145f;
+}
+
+.faq-item {
+  background: #ffe8f4;
+  margin-bottom: 18px;
+  border-radius: 15px;
+  padding: 18px 25px;
+  cursor: pointer;
+  text-align: left;
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.faq-item:hover {
+  background: #ffcce5;
+  transform: scale(1.01);
+}
+
+.faq-item h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+  font-family: 'Dancing Script', cursive;
+}
+
+.faq-item .resposta {
+  display: none;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.faq-item .resposta.ativo {
+  display: block;
+}
+
+/* CTA Final */
+.cta {
+  padding: 40px 20px;
+  background-color: #fff0f5;
+  text-align: center;
+}
+
+/* Botão WhatsApp */
+.whatsapp-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25d366;
+  color: white;
+  font-size: 26px;
+  padding: 15px 18px;
+  border-radius: 50%;
+  text-decoration: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  z-index: 999;
+  transition: transform 0.3s;
+}
+
+.whatsapp-button:hover {
+  transform: scale(1.1);
+}
+
+/* Responsivo */
+@media screen and (max-width: 768px) {
+  .bonecas {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .slide {
+    flex-direction: column;
+  }
+
+  .carrossel {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .logo {
+    max-width: 240px;
+  }
+
+  .faq-item {
+    padding: 14px 18px;
+  }
+}

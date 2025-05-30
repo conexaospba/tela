@@ -1,26 +1,35 @@
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Login Admin - Dream Baby</title>
-  <style>
-    body { font-family: Arial; background: #f3f3f3; display: flex; align-items: center; justify-content: center; height: 100vh; }
-    .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input { display: block; margin-bottom: 15px; width: 100%; padding: 10px; font-size: 16px; }
-    button { padding: 10px 15px; font-size: 16px; background: #4CAF50; color: white; border: none; cursor: pointer; }
-    .erro { color: red; margin-bottom: 10px; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="login-box">
-    <form action="/autenticar-admin" method="POST">
-      <h2>Login Administrativo</h2>
-      <div class="erro">${erro}</div>
-      <input type="password" name="senha" placeholder="Senha" required />
-      <input type="text" name="codigo" placeholder="Código de Autenticação" required />
-      <button type="submit">Entrar</button>
+<body class="bg-pink-50 flex items-center justify-center h-screen font-sans">
+  <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-sm">
+    <h1 class="text-2xl font-bold text-pink-600 text-center mb-6">Painel Administrativo</h1>
+    <form id="loginForm" class="space-y-4">
+      <input type="text" id="usuario" placeholder="Usuário" class="w-full p-3 border border-pink-300 rounded-lg" required />
+      <input type="password" id="senha" placeholder="Senha" class="w-full p-3 border border-pink-300 rounded-lg" required />
+      <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-lg">Entrar</button>
     </form>
+    <p id="erro" class="text-red-500 text-sm mt-3 hidden text-center">Usuário ou senha incorretos.</p>
   </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const usuario = document.getElementById("usuario").value;
+      const senha = document.getElementById("senha").value;
+
+      if (usuario === "Boaventura" && senha === "asap") {
+        localStorage.setItem("admin_logado", "true");
+        window.location.href = "admin-painel.html";
+      } else {
+        document.getElementById("erro").classList.remove("hidden");
+      }
+    });
+  </script>
 </body>
 </html>

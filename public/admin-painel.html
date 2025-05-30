@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-50 p-6 font-sans">
+
+  <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-pink-600">Painel Administrativo</h1>
+      <button onclick="logout()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded-lg">Logout</button>
+    </div>
+
+    <div class="mb-4">
+      <button onclick="carregar('progresso')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg mr-2">Capturas Progressivas</button>
+      <button onclick="carregar('final')" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Capturas Finais</button>
+    </div>
+
+    <div id="tabelaContainer" class="overflow-auto text-sm"></div>
+
+    <div class="mt-4 flex flex-wrap gap-3">
+      <button onclick="exportarTxt()" class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg">Exportar TXT</button>
+      <button onclick="solicitarLimpeza()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Limpar Dados</button>
+    </div>
+
+    <div class="mt-6 hidden" id="btnVoltarContainer">
+      <button onclick="voltarPainel()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg">
+        Voltar à Página Principal do Painel
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação -->
+  <div id="modalSenha" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-xl max-w-sm w-full">
+      <h2 class="text-lg font-bold mb-2">Digite a senha para limpar:</h2>
+      <input type="password" id="senhaLimpeza" placeholder="Senha" class="w-full p-2 border border-gray-300 rounded mb-4" />
+      <button onclick="confirmarLimpeza()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Confirmar</button>
+      <button onclick="fecharModal()" class="ml-2 text-gray-500">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    // Proteção contra voltar após logout
+    if (localStorage.getItem("admin_logado") !== "true") {
+      window.location.href = "admin-login.html";
+    }
+    if (sessionStorage.getItem("expired") === "1") {
+      sessionStorage.removeItem("expired");
+      window.history.forward();
+    }
+
+    let dados = [];
+    let tipoAtual = "";
+
+    // Atualizar a cada 90s
+    setInterval(() => {
+      if (tipoAtual) carregar(tipoAtual);
+    }, 90000);
+
+    function logout() {
+      localStorage.removeItem("admin_logado");
+      sessionStorage.setItem("expired", "1");
+      window.location.href = "admin-login.html";
+    }
+
+    async function carregar(tipo) {
+      tipoAtual = tipo;
+      const res = await fetch(`/admin/dados/${tipo}`);
+      dados = await res.json();
+
+      const tabela = document.createElement("table");
+      tabela.className = "w-full border border-gray-300 text-left";
+      tabela.innerHTML = `
+        <thead><tr><th class="border p-2">ID</th><th class="border p-2">Dados</th></tr></thead>
+        <tbody>
+          ${dados.map(item => `
+            <tr>
+              <td class="border p-2 font-semibold">${item._id}</td>
+              <td class="border p-2 whitespace-pre-wrap break-all">${JSON.stringify(item.dados, null, 2)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      `;
+      document.getElementById("tabelaContainer").innerHTML = "";
+      document.getElementById("tabelaContainer").appendChild(tabela);
+      document.getElementById("btnVoltarContainer").classList.remove("hidden");
+    }
+
+    function voltarPainel() {
+      tipoAtual = "";
+      dados = [];
+      document.getElementById("tabelaContainer").innerHTML = "";
+      document.getElementById("btnVoltarContainer").classList.add("hidden");
+    }
+
+    function exportarTxt() {
+      const conteudo = dados.map(d => JSON.stringify(d.dados, null, 2)).join("\n\n");
+      const blob = new Blob([conteudo], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${tipoAtual}_capturas.txt`;
+      link.click();
+    }
+
+    function solicitarLimpeza() {
+      document.getElementById("modalSenha").classList.remove("hidden");
+    }
+
+    async function confirmarLimpeza() {
+      const senha = document.getElementById("senhaLimpeza").value;
+      if (senha === "limpar") {
+        await fetch(`/admin/limpar/${tipoAtual}`, { method: "DELETE" });
+        carregar(tipoAtual);
+        fecharModal();
+      } else {
+        alert("Senha incorreta");
+      }
+    }
+
+    function fecharModal() {
+      document.getElementById("modalSenha").classList.add("hidden");
+      document.getElementById("senhaLimpeza").value = "";
+    }
+  </script>
+</body>
+</html>

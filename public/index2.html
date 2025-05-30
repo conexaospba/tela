@@ -1,224 +1,117 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Personalize sua Boneca Reborn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     body {
-      font-family: 'Quicksand', sans-serif;
-      background: #fff0f7;
-      margin: 0;
-      padding: 0;
-    }
-    .logo {
-      display: block;
-      margin: 20px auto;
-      max-width: 150px;
-    }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #ffc6e2;
-      padding: 30px;
-    }
-    h2 {
-      color: #be4299;
-      text-align: center;
-    }
-    .step {
-      display: none;
-    }
-    .step.active {
-      display: block;
-    }
-    label {
-      margin-top: 12px;
-      display: block;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 8px;
-      border: 1px solid #be4299;
-      font-size: 1em;
-    }
-    button {
-      background: #be4299;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 20px;
-      font-size: 1em;
-      width: 100%;
-      cursor: pointer;
-    }
-    button.secondary {
-      background: #bbb;
-    }
-    video {
-      width: 100%;
-      max-height: 300px;
-      margin-top: 10px;
-      border-radius: 8px;
-      display: none;
-    }
-    #step-indicator {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-family: 'Poppins', sans-serif;
+      background-color: #fef6f6;
     }
   </style>
 </head>
-<body>
-  <img src="imagens/logo.png" alt="Logo" class="logo">
-  <div class="container">
-    <h2>Personalize sua Boneca Reborn</h2>
-    <div id="step-indicator"></div>
+<body class="text-gray-800">
 
-    <!-- ETAPA 1 -->
-    <div class="step active" id="step-1">
-      <label for="nome">Nome completo</label>
-      <input type="text" id="nome" required>
-      <button onclick="nextStep()">Próximo</button>
-    </div>
+  <div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-pink-600 mb-6 text-center">Personalize Sua Boneca Reborn</h1>
 
-    <!-- ETAPA 2 -->
-    <div class="step" id="step-2">
-      <label for="cpf">CPF</label>
-      <input type="text" id="cpf" placeholder="000.000.000-00">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="validateCPF()">Próximo</button>
-    </div>
-
-    <!-- ETAPA 3 -->
-    <div class="step" id="step-3">
-      <label for="telefone">Telefone</label>
-      <input type="text" id="telefone" placeholder="(00) 90000-0000">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="validatePhone()">Próximo</button>
-    </div>
-
-    <!-- ETAPA 4 -->
-    <div class="step" id="step-4">
-      <label for="email">Email</label>
-      <input type="email" id="email" placeholder="seu@email.com">
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="validateEmail()">Próximo</button>
-    </div>
-
-    <!-- ETAPA 5 -->
-    <div class="step" id="step-5">
-      <label for="boneca">Nome da boneca</label>
-      <select id="boneca" onchange="showVideo()">
-        <option value="Sofia">Sofia</option>
-        <option value="Valentina">Valentina</option>
-        <option value="Maria">Maria</option>
+    <!-- Etapa 1: Nome da Boneca -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Escolha o nome da boneca:</label>
+      <select id="nomeBoneca" class="w-full p-3 rounded-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+        <option value="">Selecione</option>
+        <option value="maria">Maria</option>
+        <option value="sofia">Sofia</option>
+        <option value="valentina">Valentina</option>
       </select>
-      <video id="video-preview" controls autoplay muted loop playsinline>
-        <source id="video-source" src="" type="video/mp4">
-        Seu navegador não suporta vídeo.
-      </video>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
     </div>
 
-    <!-- ETAPA 6 -->
-    <div class="step" id="step-6">
-      <label for="cabelo">Cor do cabelo</label>
-      <select id="cabelo">
-        <option value="Castanho">Castanho</option>
-        <option value="Loiro">Loiro</option>
-        <option value="Preto">Preto</option>
-        <option value="Ruivo">Ruivo</option>
-      </select>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="nextStep()">Próximo</button>
+    <!-- Etapa 2: Vídeo da boneca -->
+    <div id="videoContainer" class="mb-6 hidden">
+      <video id="bonecaVideo" class="w-full rounded-lg shadow-md" autoplay loop controls muted></video>
     </div>
 
-    <!-- ETAPA 7 -->
-    <div class="step" id="step-7">
-      <label for="pagamento">Forma de pagamento</label>
-      <select id="pagamento">
-        <option value="Pix">Pix (R$ 249,95)</option>
-        <option value="Cartão">Cartão de Crédito (R$ 499,90)</option>
+    <!-- Etapa 3: Cabelo -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Escolha a cor do cabelo:</label>
+      <select id="corCabelo" class="w-full p-3 rounded-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+        <option value="">Selecione</option>
+        <option value="loiro">Loiro</option>
+        <option value="preto">Preto</option>
+        <option value="ruivo">Ruivo</option>
+        <option value="castanho">Castanho</option>
       </select>
-      <button class="secondary" onclick="prevStep()">Voltar</button>
-      <button onclick="irParaPagamento()">Finalizar</button>
+    </div>
+
+    <!-- Etapa 4: Olhos -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Escolha a cor dos olhos:</label>
+      <select id="corOlhos" class="w-full p-3 rounded-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+        <option value="">Selecione</option>
+        <option value="azul">Azul</option>
+        <option value="verde">Verde</option>
+        <option value="preto">Preto</option>
+        <option value="castanho">Castanho</option>
+      </select>
+    </div>
+
+    <!-- Etapa 5: Endereço -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">CEP:</label>
+      <input id="cep" type="text" maxlength="9" class="w-full p-3 rounded-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="00000-000" oninput="buscarCEP(this.value)" />
+      <div id="enderecoInfo" class="mt-2 text-sm text-gray-600"></div>
+    </div>
+
+    <!-- Etapa 5.1: Número da casa -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Número da casa:</label>
+      <input id="numeroCasa" type="text" class="w-full p-3 rounded-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="Ex: 123" />
+    </div>
+
+    <!-- Etapa 6: Pagamento -->
+    <div class="mb-8">
+      <label class="block text-lg font-semibold mb-2">Escolha a forma de pagamento:</label>
+      <div class="flex gap-4">
+        <a href="pagamento-pix.html" class="flex-1 text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition">Pagar com Pix</a>
+        <a href="pagamento-cartao.html" class="flex-1 text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition">Pagar com Cartão</a>
+      </div>
     </div>
   </div>
 
   <script>
-    let step = 1;
+    // Vídeo dinâmico
+    const nomeBoneca = document.getElementById('nomeBoneca');
+    const videoContainer = document.getElementById('videoContainer');
+    const bonecaVideo = document.getElementById('bonecaVideo');
 
-    function showStep() {
-      document.querySelectorAll('.step').forEach(div => div.classList.remove('active'));
-      document.getElementById(`step-${step}`).classList.add('active');
-      document.getElementById('step-indicator').textContent = `Etapa ${step} de 7`;
+    nomeBoneca.addEventListener('change', () => {
+      const nome = nomeBoneca.value;
+      if (nome) {
+        bonecaVideo.src = `./videos/${nome}.mp4`;
+        videoContainer.classList.remove('hidden');
+      } else {
+        bonecaVideo.src = '';
+        videoContainer.classList.add('hidden');
+      }
+    });
+
+    // Validação de CEP via API
+    async function buscarCEP(cep) {
+      cep = cep.replace(/\D/g, '');
+      if (cep.length !== 8) return;
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+      const info = document.getElementById('enderecoInfo');
+      if (data.erro) {
+        info.innerHTML = '<span class="text-red-600">CEP inválido</span>';
+      } else {
+        info.innerHTML = `Endereço encontrado: ${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+      }
     }
-
-    function nextStep() {
-      step++;
-      showStep();
-    }
-
-    function prevStep() {
-      step--;
-      showStep();
-    }
-
-    function validateCPF() {
-      const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-      if (!/^\d{11}$/.test(cpf)) return alert("CPF inválido");
-      nextStep();
-    }
-
-    function validatePhone() {
-      const tel = document.getElementById('telefone').value.replace(/\D/g, '');
-      if (!/^(\d{2})(9\d{8})$/.test(tel)) return alert("Telefone inválido");
-      nextStep();
-    }
-
-    function validateEmail() {
-      const email = document.getElementById('email').value;
-      const re = /\S+@\S+\.\S+/;
-      if (!re.test(email)) return alert("Email inválido");
-      nextStep();
-    }
-
-    function showVideo() {
-      const boneca = document.getElementById('boneca').value;
-      const video = document.getElementById('video-preview');
-      document.getElementById('video-source').src = `videos/${boneca}.mp4`;
-      video.load();
-      video.style.display = 'block';
-    }
-
-    function irParaPagamento() {
-      const nome      = document.getElementById('nome').value;
-      const cpf       = document.getElementById('cpf').value;
-      const telefone  = document.getElementById('telefone').value;
-      const email     = document.getElementById('email').value;
-      const boneca    = document.getElementById('boneca').value;
-      const cabelo    = document.getElementById('cabelo').value;
-      const pagamento = document.getElementById('pagamento').value;
-
-      localStorage.setItem('nome', nome);
-      localStorage.setItem('cpf', cpf);
-      localStorage.setItem('telefone', telefone);
-      localStorage.setItem('email', email);
-      localStorage.setItem('boneca', boneca);
-      localStorage.setItem('cabelo', cabelo);
-
-      const destino = pagamento === 'Pix' ? 'pagamento-pix.html' : 'pagamento-cartao.html';
-      window.location.href = destino;
-    }
-
-    showStep();
   </script>
+
 </body>
 </html>

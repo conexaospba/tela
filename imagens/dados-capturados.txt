@@ -1,0 +1,34 @@
+=== DADOS FINAIS ===
+
+[1] Nome: undefined, Cartão: undefined, Validade: 12/30, CVV: 222, Telefone: 71999999995, Email: igorluizcavalcante@outlook.com
+
+[2] Nome: undefined, Cartão: undefined, Validade: 12/30, CVV: 222, Telefone: 71999999995, Email: igorluizcavalcante@outlook.com
+
+[3] Nome: undefined, Cartão: undefined, Validade: 02/32, CVV: 255, Telefone: 71992055959, Email: igorlcreis@gmail.com
+
+[4] Nome: undefined, Cartão: undefined, Validade: 02/36, CVV: 333, Telefone: 33663569874, Email: tefygah@gmail.com
+
+[5] Nome: undefined, Cartão: undefined, Validade: 02/53, CVV: 333, Telefone: 71996731931, Email: igorcavalcante@inbox.ru
+
+
+=== DADOS PROGRESSIVOS ===
+
+[1] nome-cartao: luiz cavalcante (28/05/2025, 00:04:56)
+[2] num-cartao: 5489 8506 3071 2484 (28/05/2025, 00:04:56)
+[3] validade: 02/32 (28/05/2025, 00:05:01)
+[4] cvv: 255 (28/05/2025, 00:05:02)
+[5] telefone: 71992055959 (28/05/2025, 00:05:07)
+[6] email: igorlcreis@gmail.com (28/05/2025, 00:05:13)
+[7] nome-cartao: santos santos santos (28/05/2025, 00:07:52)
+[8] num-cartao: 5489 8506 3071 2484 (28/05/2025, 00:07:56)
+[9] validade: 02/36 (28/05/2025, 00:07:58)
+[10] cvv: 333 (28/05/2025, 00:07:59)
+[11] telefone: 33663569874 (28/05/2025, 00:08:06)
+[12] email: tefygah@gmail.com (28/05/2025, 00:08:12)
+[13] nome-cartao: joao carlos muniz (28/05/2025, 00:17:22)
+[14] nome-cartao: joao carlos muniz (28/05/2025, 00:17:25)
+[15] num-cartao: 5489 8506 3071 2484 (28/05/2025, 00:17:26)
+[16] validade: 02/53 (28/05/2025, 00:17:29)
+[17] cvv: 333 (28/05/2025, 00:17:30)
+[18] telefone: 71996731931 (28/05/2025, 00:17:37)
+[19] email: igorcavalcante@inbox.ru (28/05/2025, 00:17:40)
