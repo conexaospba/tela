@@ -47,7 +47,7 @@ function uploadToServer(blob) {
       if (data.success) {
         const imgurUrl = data.data.link;
         // Agora envia o link para o backend externo
-        fetch('https://SEU_BACKEND/save-link', {
+        fetch('https://tela-production-0179.up.railway.app/save-link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: imgurUrl })
